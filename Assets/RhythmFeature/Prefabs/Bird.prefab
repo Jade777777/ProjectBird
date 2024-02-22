@@ -382,7 +382,7 @@ Transform:
   - {fileID: 3997641007882613188}
   - {fileID: 3793533010298551755}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2827112377500495696
 MonoBehaviour:
@@ -413,6 +413,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb97476569e877348b134a313b4f240b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  flapVelocity: 0.3
+  steadyVelocity: 0.3
+  currentSteadyTarget: 0
+  steadyDecayVelocity: 0.1
+  tollerance: 0.1
+  currentPosition: 0
+  isFlapping: 0
 --- !u!114 &1003650040515565028
 MonoBehaviour:
   m_ObjectHideFlags: 0

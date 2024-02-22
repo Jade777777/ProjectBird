@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.Rendering.DebugUI;
 
 public class RhythmTracker : MonoBehaviour
 {
@@ -23,16 +24,19 @@ public class RhythmTracker : MonoBehaviour
     [SerializeField]
     bool isFlapping = false;
 
-    bool powerFlap = false;
+    bool streak = false;
+
+
     private void Update()
     {
+       
         if (isFlapping && currentPosition > 0)
         {
             currentPosition-=flapVelocity*Time.deltaTime;
         }
         else
         {
-
+            isFlapping = false;
             currentPosition+=steadyVelocity*Time.deltaTime;
 
             if(currentPosition >= currentSteadyTarget)
@@ -47,20 +51,33 @@ public class RhythmTracker : MonoBehaviour
         currentSteadyTarget = Mathf.Clamp(currentSteadyTarget, tollerance, 1);
         GetComponent<ProcAnimFlap>().WingPos = currentPosition;
     }
+
+    //TODO: player should only flap down, not up
     public void OnFlap(InputValue value)
     {
-        if (value.isPressed && currentPosition > currentSteadyTarget-tollerance && currentPosition < currentSteadyTarget)
+        if (!isFlapping && value.isPressed && currentPosition > currentSteadyTarget - tollerance && currentPosition < currentSteadyTarget)
         {
-            Debug.Log("Down Correct");
-            powerFlap = true;
-        }
-        if (!value.isPressed && powerFlap && currentPosition <= tollerance)
-        {
-            Debug.Log("Up Correct, Power Flap!");
             currentSteadyTarget += 0.1f;
-            powerFlap =false;
+            Debug.Log("Down Correct");
+            streak = true;
         }
 
-        isFlapping =  value.isPressed;
+
+        if (value.isPressed)
+        {
+            isFlapping = value.isPressed;
+        }
+    }
+    private void OnDrawGizmos()
+    {
+        if (!isFlapping&&currentPosition > currentSteadyTarget - tollerance && currentPosition < currentSteadyTarget)
+        {
+            Gizmos.color = Color.green;
+        }
+        else
+        {
+            Gizmos.color = Color.red;
+        }
+        Gizmos.DrawSphere(transform.position+Vector3.up*1.2f, 0.3f);
     }
 }
