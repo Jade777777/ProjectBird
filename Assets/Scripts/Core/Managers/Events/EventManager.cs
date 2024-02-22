@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Core.Managers
+namespace Core.Managers.Events
 {
     public class EventManager
     {

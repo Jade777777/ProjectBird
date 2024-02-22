@@ -1,4 +1,6 @@
-﻿namespace Core.Managers
+﻿using Core.Managers.Events;
+
+namespace Core.Managers
 {
     public abstract class GameEvent
     {
