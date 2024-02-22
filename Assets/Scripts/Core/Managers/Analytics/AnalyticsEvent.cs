@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Core.Managers
+namespace Core.Managers.Analytics
 {
     public class AnalyticsEvent : GameEvent
     {

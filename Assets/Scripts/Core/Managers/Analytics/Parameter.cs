@@ -1,4 +1,4 @@
-﻿namespace Core.Managers
+﻿namespace Core.Managers.Analytics
 {
     public struct Parameter
     {
