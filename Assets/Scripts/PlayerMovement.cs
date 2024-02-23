@@ -29,8 +29,8 @@ public class PlayerMovement : MonoBehaviour
 
     private float currentSpeed=0 ;
     private float currentYSpeed = 0;
-    private float fallSpeed = 2f;
-    private float maxRiseSpeed = 4f;
+    private float fallSpeed = 3f;
+    private float maxRiseSpeed = 8f;
     
 
 
@@ -99,7 +99,7 @@ public class PlayerMovement : MonoBehaviour
         if (GetComponent<RhythmTracker>().IsFlapping)
         {
             currentYSpeed = maxRiseSpeed*GetComponent<RhythmTracker>().Accuracy;
-            currentYSpeed = Mathf.Clamp(currentYSpeed, 0.1f, maxRiseSpeed);
+            currentYSpeed = Mathf.Clamp(currentYSpeed, fallSpeed, maxRiseSpeed);
         }
         else
         {
