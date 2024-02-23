@@ -1,76 +1,113 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static UnityEngine.Rendering.DebugUI;
 
 public class RhythmTracker : MonoBehaviour
 {
-    [SerializeField]
-    float flapVelocity =1.0f;
-    [SerializeField]
-    float steadyVelocity = 1.0f;
-    [SerializeField]
-    float currentSteadyTarget = 0.9f;
-    [SerializeField]
-    float steadyDecayVelocity = 0.1f;
-
-    [SerializeField]
-    float tollerance = 0.01f;
+    [Header("Target Range")]
+    [SerializeField, Range(0, 1)]
+    float targetMin;
+    [SerializeField, Range(0, 1)]
+    float targetMax;
 
 
-    [SerializeField]
-    float currentPosition = 0;
-    [SerializeField]
-    bool isFlapping = false;
+    [Header("Speed in Flaps/Second")]
+    [SerializeField, Tooltip("The rate of flaping when at a minumum streak")]
+    float maxVelocity;
+    [SerializeField, Tooltip("The rate of flaping when at a maximum streak")]
+    float minVelocity;
 
-    bool streak = false;
+
+    [Header("Streak")]
+    [SerializeField, Tooltip("The streak that must be achieved to reach maximum accuracy")]
+    int maxStreak = 10;
+
+
+    int currentStreak = 0;
+
+
+    /// <summary>
+    /// Range of 0 to 1, 0 being downward wing position, 1 being upward.
+    /// </summary>
+    public float CurrentPosition { get; private set; }
+    /// <summary>
+    /// Range of 0 to 1, weight of current streak compared to max streak.
+    /// </summary>
+    public float Accuracy { get { return (float)currentStreak / (float)maxStreak; } }
+    /// <summary>
+    /// How long it takes to do one full flap of the wings.
+    /// </summary>
+    public float CurrentVelocity { get { return Mathf.Lerp(maxVelocity, minVelocity, (float)currentStreak / (float)maxStreak)/2; } }
+    /// <summary>
+    /// Is the current position within range to increase the streak.
+    /// </summary>
+    public bool IsTarget { get { return CurrentPosition > targetMin && CurrentPosition < targetMax; } }
+    /// <summary>
+    /// Is the player currently flapping the wings downward.
+    /// </summary>
+    public bool IsFlapping { get; private set; }
+    /// <summary>
+    /// Was the last flap successful.
+    /// </summary>
+    public bool IsSuccess { get; private set; }
 
 
     private void Update()
     {
-       
-        if (isFlapping && currentPosition > 0)
+        if(IsFlapping)
         {
-            currentPosition-=flapVelocity*Time.deltaTime;
+            CurrentPosition -= CurrentVelocity * Time.deltaTime;
         }
         else
         {
-            isFlapping = false;
-            currentPosition+=steadyVelocity*Time.deltaTime;
-
-            if(currentPosition >= currentSteadyTarget)
-            {
-                currentSteadyTarget -= steadyDecayVelocity*Time.deltaTime;
-            }
-            
+            CurrentPosition += CurrentVelocity * Time.deltaTime;
+        }
+        
+        //Clamping manualy because IsFlapping needs to be set
+        if (CurrentPosition < 0)
+        {
+            CurrentPosition = 0;
+            IsFlapping = false;
         }
 
-
-        currentPosition = Mathf.Clamp(currentPosition,0,currentSteadyTarget);
-        currentSteadyTarget = Mathf.Clamp(currentSteadyTarget, tollerance, 1);
-        GetComponent<ProcAnimFlap>().WingPos = currentPosition;
+        if(CurrentPosition > 1)
+        {
+            CurrentPosition = 1;
+        }
+        GetComponent<ProcAnimFlap>().WingPos = CurrentPosition;
     }
 
-    //TODO: player should only flap down, not up
+    /// <summary>
+    /// Called by Unitys input system.
+    /// </summary>
+    /// <param name="value"></param>
     public void OnFlap(InputValue value)
     {
-        if (!isFlapping && value.isPressed && currentPosition > currentSteadyTarget - tollerance && currentPosition < currentSteadyTarget)
+        if (value.isPressed && !IsFlapping)// only valid input is on upswing
         {
-            currentSteadyTarget += 0.1f;
-            Debug.Log("Down Correct");
-            streak = true;
+            if (IsTarget)
+            {
+                currentStreak++;
+                IsSuccess = true;
+            }
+            else
+            {
+                currentStreak--;
+                IsSuccess = false;
+            }
+            currentStreak = Mathf.Clamp(currentStreak, 0, maxStreak);
+            IsFlapping = true;
         }
 
-
-        if (value.isPressed)
-        {
-            isFlapping = value.isPressed;
-        }
     }
+
+    //Debug code to help visualize success
     private void OnDrawGizmos()
     {
-        if (!isFlapping&&currentPosition > currentSteadyTarget - tollerance && currentPosition < currentSteadyTarget)
+        if (!IsFlapping&& IsTarget)
         {
             Gizmos.color = Color.green;
         }
@@ -79,5 +116,14 @@ public class RhythmTracker : MonoBehaviour
             Gizmos.color = Color.red;
         }
         Gizmos.DrawSphere(transform.position+Vector3.up*1.2f, 0.3f);
+        if (IsSuccess)
+        {
+            Gizmos.color = Color.green;
+        }
+        else
+        {
+            Gizmos.color = Color.red;
+        }
+        Gizmos.DrawSphere(transform.position + Vector3.up * 1.7f, 0.15f);
     }
 }
