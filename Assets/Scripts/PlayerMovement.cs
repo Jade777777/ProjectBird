@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private GameObject cameraTarget;
     [SerializeField]
-    private float flySpeed = 5f;
+    private float maxFlySpeed = 5f;
     [SerializeField]
     private float rotSpeed = 1f;    
     [SerializeField]
@@ -20,10 +20,18 @@ public class PlayerMovement : MonoBehaviour
     
 
     private CustomInput customInput = null;
-    private Rigidbody rb;
+    private CharacterController characterController;
 
     private Quaternion inputRotation = Quaternion.identity;
     private Quaternion cameraTargetRotation = Quaternion.identity;
+
+
+
+    private float currentSpeed=0 ;
+    private float currentYSpeed = 0;
+    private float fallSpeed = 2f;
+    private float maxRiseSpeed = 4f;
+    
 
 
     //Get bird prefab
@@ -35,7 +43,7 @@ public class PlayerMovement : MonoBehaviour
     private void Awake()
     {
         customInput = new CustomInput();
-        rb = GetComponent<Rigidbody>();
+        characterController = GetComponent<CharacterController>();
 
         birdAnimator = birdPrefab.GetComponent<Animator>();
     }
@@ -55,8 +63,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        HandleRhythm();
         HandleRotation();
-        
+        Movement();
+
     }
    
     // Handles rotating the player.
@@ -83,6 +93,33 @@ public class PlayerMovement : MonoBehaviour
         inputRotation = Quaternion.Euler(0, val * rotSpeed, 0);
     }
 
+    private void HandleRhythm()
+    {
+        
+        if (GetComponent<RhythmTracker>().IsFlapping)
+        {
+            currentYSpeed = maxRiseSpeed*GetComponent<RhythmTracker>().Accuracy;
+            currentYSpeed = Mathf.Clamp(currentYSpeed, 0.1f, maxRiseSpeed);
+        }
+        else
+        {
+            currentYSpeed = -fallSpeed;
+
+        }
+        if (GetComponent<CharacterController>().isGrounded)
+        {
+            currentSpeed = 0;
+        }
+        else
+        {
+            currentSpeed = GetComponent<RhythmTracker>().Accuracy * maxFlySpeed;
+        }
+
+        currentSpeed = Mathf.Clamp(currentSpeed, 0, maxFlySpeed);
+     
+    }
+
+
     // Camera revolves with mouse move if LMB is held down
     private void OnCameraRevolve(InputAction.CallbackContext value)
     {
@@ -100,7 +137,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rb.velocity = transform.forward * flySpeed * Time.deltaTime;
+       
+    }
+
+    private void Movement()
+    {
+        characterController.Move((transform.forward * currentSpeed + transform.up * currentYSpeed) * Time.deltaTime);
 
         // Player Rotation
         transform.rotation *= inputRotation;
@@ -113,7 +155,7 @@ public class PlayerMovement : MonoBehaviour
 
         // Clamping rotation on x axis to prevent camera from going upside-down
         var angles = cameraTarget.transform.localEulerAngles;
-        if(angles.x > 180)
+        if (angles.x > 180)
         {
             angles.x = Mathf.Clamp(angles.x, 360 - maxCameraXRot, 360);
         }
@@ -124,9 +166,5 @@ public class PlayerMovement : MonoBehaviour
 
         cameraTarget.transform.localEulerAngles = angles;
 
-        
     }
-
-
-
 }

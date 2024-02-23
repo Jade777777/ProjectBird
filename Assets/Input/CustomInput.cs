@@ -44,6 +44,15 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Flap"",
+                    ""type"": ""Button"",
+                    ""id"": ""962bfb05-60c6-4490-94e5-5e1c34c945e8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -90,6 +99,17 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
                     ""action"": ""CameraRevolve"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4ca06c1b-f5cc-44c2-a63a-53b5d145e41e"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Flap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -100,6 +120,7 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
         m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
         m_Gameplay_Turning = m_Gameplay.FindAction("Turning", throwIfNotFound: true);
         m_Gameplay_CameraRevolve = m_Gameplay.FindAction("CameraRevolve", throwIfNotFound: true);
+        m_Gameplay_Flap = m_Gameplay.FindAction("Flap", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -163,12 +184,14 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
     private List<IGameplayActions> m_GameplayActionsCallbackInterfaces = new List<IGameplayActions>();
     private readonly InputAction m_Gameplay_Turning;
     private readonly InputAction m_Gameplay_CameraRevolve;
+    private readonly InputAction m_Gameplay_Flap;
     public struct GameplayActions
     {
         private @CustomInput m_Wrapper;
         public GameplayActions(@CustomInput wrapper) { m_Wrapper = wrapper; }
         public InputAction @Turning => m_Wrapper.m_Gameplay_Turning;
         public InputAction @CameraRevolve => m_Wrapper.m_Gameplay_CameraRevolve;
+        public InputAction @Flap => m_Wrapper.m_Gameplay_Flap;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -184,6 +207,9 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
             @CameraRevolve.started += instance.OnCameraRevolve;
             @CameraRevolve.performed += instance.OnCameraRevolve;
             @CameraRevolve.canceled += instance.OnCameraRevolve;
+            @Flap.started += instance.OnFlap;
+            @Flap.performed += instance.OnFlap;
+            @Flap.canceled += instance.OnFlap;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -194,6 +220,9 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
             @CameraRevolve.started -= instance.OnCameraRevolve;
             @CameraRevolve.performed -= instance.OnCameraRevolve;
             @CameraRevolve.canceled -= instance.OnCameraRevolve;
+            @Flap.started -= instance.OnFlap;
+            @Flap.performed -= instance.OnFlap;
+            @Flap.canceled -= instance.OnFlap;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -215,5 +244,6 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
     {
         void OnTurning(InputAction.CallbackContext context);
         void OnCameraRevolve(InputAction.CallbackContext context);
+        void OnFlap(InputAction.CallbackContext context);
     }
 }

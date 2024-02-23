@@ -9,9 +9,9 @@ public class RhythmTracker : MonoBehaviour
 {
     [Header("Target Range")]
     [SerializeField, Range(0, 1)]
-    float targetMin;
+    float targetMin=0.7f;
     [SerializeField, Range(0, 1)]
-    float targetMax;
+    float targetMax=0.95f;
 
 
     [Header("Speed in Flaps/Second")]
@@ -25,7 +25,7 @@ public class RhythmTracker : MonoBehaviour
     [SerializeField, Tooltip("The streak that must be achieved to reach maximum accuracy")]
     int maxStreak = 10;
 
-
+    [SerializeField, Tooltip("The current streak, this should be zero when the game is not running")]
     int currentStreak = 0;
 
 
@@ -54,6 +54,24 @@ public class RhythmTracker : MonoBehaviour
     /// </summary>
     public bool IsSuccess { get; private set; }
 
+    private CustomInput customInput = null;
+    private void Awake()
+    {
+        
+        customInput = new CustomInput();
+    }
+
+    private void OnEnable()
+    {
+        customInput.Enable();
+        customInput.Gameplay.Flap.performed+=OnFlap;
+    }
+    private void OnDisable()
+    {
+        customInput.Disable();
+        customInput.Gameplay.Flap.performed -= OnFlap;
+
+    }
 
     private void Update()
     {
@@ -77,16 +95,16 @@ public class RhythmTracker : MonoBehaviour
         {
             CurrentPosition = 1;
         }
-        GetComponent<ProcAnimFlap>().WingPos = CurrentPosition;
+        
     }
 
     /// <summary>
     /// Called by Unitys input system.
     /// </summary>
     /// <param name="value"></param>
-    public void OnFlap(InputValue value)
+    public void OnFlap(InputAction.CallbackContext value)
     {
-        if (value.isPressed && !IsFlapping)// only valid input is on upswing
+        if (!IsFlapping)// only valid input is on upswing
         {
             if (IsTarget)
             {

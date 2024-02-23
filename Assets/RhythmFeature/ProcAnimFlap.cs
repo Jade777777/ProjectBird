@@ -20,6 +20,7 @@ public class ProcAnimFlap : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        WingPos = GetComponentInParent<RhythmTracker>().CurrentPosition;
         Quaternion wingRot = Quaternion.Euler(0, 0, Mathf.Lerp(maxWingAngle, minWingAngle, WingPos));
         pivot1.transform.localRotation = wingRot;
         pivot2.transform.localRotation = Quaternion.Inverse(wingRot);
