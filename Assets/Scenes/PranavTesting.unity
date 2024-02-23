@@ -679,6 +679,7 @@ Transform:
   m_Children:
   - {fileID: 2120107891}
   - {fileID: 230127995}
+  - {fileID: 1501787857}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -700,6 +701,7 @@ MonoBehaviour:
   camRotSpeed: 1
   maxCameraXRot: 45
   mouseDeltaDeadZone: 0.1
+  birdPrefab: {fileID: 1501787856}
 --- !u!54 &1384623242
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -799,6 +801,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1501787856 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7175558903671402490, guid: 166412eba3f8b4c409f697282b9c4e02,
+    type: 3}
+  m_PrefabInstance: {fileID: 2001825426}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1501787857 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5289669704142144027, guid: 166412eba3f8b4c409f697282b9c4e02,
+    type: 3}
+  m_PrefabInstance: {fileID: 2001825426}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1941910348
 GameObject:
   m_ObjectHideFlags: 0
@@ -904,6 +918,79 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1941910348}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &2001825426
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1384623240}
+    m_Modifications:
+    - target: {fileID: 5289669704142144027, guid: 166412eba3f8b4c409f697282b9c4e02,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5289669704142144027, guid: 166412eba3f8b4c409f697282b9c4e02,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.13999999
+      objectReference: {fileID: 0}
+    - target: {fileID: 5289669704142144027, guid: 166412eba3f8b4c409f697282b9c4e02,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.5135431
+      objectReference: {fileID: 0}
+    - target: {fileID: 5289669704142144027, guid: 166412eba3f8b4c409f697282b9c4e02,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.8299999
+      objectReference: {fileID: 0}
+    - target: {fileID: 5289669704142144027, guid: 166412eba3f8b4c409f697282b9c4e02,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5289669704142144027, guid: 166412eba3f8b4c409f697282b9c4e02,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5289669704142144027, guid: 166412eba3f8b4c409f697282b9c4e02,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5289669704142144027, guid: 166412eba3f8b4c409f697282b9c4e02,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5289669704142144027, guid: 166412eba3f8b4c409f697282b9c4e02,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5289669704142144027, guid: 166412eba3f8b4c409f697282b9c4e02,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5289669704142144027, guid: 166412eba3f8b4c409f697282b9c4e02,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7175558903671402490, guid: 166412eba3f8b4c409f697282b9c4e02,
+        type: 3}
+      propertyPath: m_Name
+      value: BirdWithAnimation
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 166412eba3f8b4c409f697282b9c4e02, type: 3}
 --- !u!1 &2120107886
 GameObject:
   m_ObjectHideFlags: 0
@@ -922,7 +1009,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &2120107888
 BoxCollider:
   m_ObjectHideFlags: 0
