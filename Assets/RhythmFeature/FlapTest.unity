@@ -133,35 +133,9 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -7127163894118150406, guid: 29baeec7c9a13204fb7eb5d806a09597,
         type: 3}
-<<<<<<< HEAD
-      propertyPath: streak
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -7127163894118150406, guid: 29baeec7c9a13204fb7eb5d806a09597,
-        type: 3}
-      propertyPath: targetMax
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -7127163894118150406, guid: 29baeec7c9a13204fb7eb5d806a09597,
-        type: 3}
-      propertyPath: targetMin
-      value: 0.7
-      objectReference: {fileID: 0}
-    - target: {fileID: -7127163894118150406, guid: 29baeec7c9a13204fb7eb5d806a09597,
-        type: 3}
-      propertyPath: maxVelocity
-      value: 2.5
-      objectReference: {fileID: 0}
-    - target: {fileID: -7127163894118150406, guid: 29baeec7c9a13204fb7eb5d806a09597,
-        type: 3}
-      propertyPath: minVelocity
-      value: 0.4
-      objectReference: {fileID: 0}
-=======
       propertyPath: birdPrefab
       value: 
       objectReference: {fileID: 1898691411}
->>>>>>> e25b461e55b8841c8b15ad83b07a36aa22a3dfa6
     - target: {fileID: -7127163894118150406, guid: 29baeec7c9a13204fb7eb5d806a09597,
         type: 3}
       propertyPath: flapVelocity

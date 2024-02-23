@@ -16,9 +16,9 @@ public class RhythmTracker : MonoBehaviour
 
     [Header("Speed in Flaps/Second")]
     [SerializeField, Tooltip("The rate of flaping when at a minumum streak")]
-    float maxVelocity;
+    float maxVelocity = 5f;
     [SerializeField, Tooltip("The rate of flaping when at a maximum streak")]
-    float minVelocity;
+    float minVelocity = 1f;
 
 
     [Header("Streak")]

@@ -25,10 +25,19 @@ public class PlayerMovement : MonoBehaviour
     private Quaternion inputRotation = Quaternion.identity;
     private Quaternion cameraTargetRotation = Quaternion.identity;
 
+
+    //Get bird prefab
+    public GameObject birdPrefab;
+
+    //Get bird animator
+    Animator birdAnimator;
+
     private void Awake()
     {
         customInput = new CustomInput();
         rb = GetComponent<Rigidbody>();
+
+        birdAnimator = birdPrefab.GetComponent<Animator>();
     }
 
     private void OnEnable()
@@ -53,10 +62,23 @@ public class PlayerMovement : MonoBehaviour
     // Handles rotating the player.
     private void HandleRotation()
     {
-        if (!customInput.Gameplay.Turning.IsPressed()) return;
+        //if (!customInput.Gameplay.Turning.IsPressed()) return;
 
         float val = Mathf.Sign(customInput.Gameplay.Turning.ReadValue<float>());
-        Debug.Log(val);
+        //Debug.Log(val);
+
+        if(customInput.Gameplay.Turning.IsPressed())
+        {
+            birdAnimator.SetFloat("flyingDirectionX", val);
+            birdAnimator.SetBool("flying", false);
+        }
+        else
+        {
+            birdAnimator.SetTrigger("Fly");
+            birdAnimator.SetBool("flying", true);
+            Debug.Log("forward");
+            return;
+        }
 
         inputRotation = Quaternion.Euler(0, val * rotSpeed, 0);
     }
@@ -101,6 +123,10 @@ public class PlayerMovement : MonoBehaviour
         }
 
         cameraTarget.transform.localEulerAngles = angles;
+
+        
     }
+
+
 
 }
