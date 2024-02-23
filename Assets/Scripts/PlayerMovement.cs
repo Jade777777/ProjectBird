@@ -84,9 +84,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            birdAnimator.SetTrigger("Fly");
             birdAnimator.SetBool("flying", true);
-            Debug.Log("forward");
             return;
         }
 
