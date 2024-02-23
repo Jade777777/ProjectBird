@@ -28,9 +28,18 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
             ""id"": ""9fe98959-d098-4c55-8d2b-c0407994741f"",
             ""actions"": [
                 {
-                    ""name"": ""Movement"",
+                    ""name"": ""Turning"",
                     ""type"": ""Value"",
                     ""id"": ""dca15290-5aab-441d-b2fa-2f5ebf417938"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""CameraRevolve"",
+                    ""type"": ""Value"",
+                    ""id"": ""65b40fbb-7d32-45e3-8f85-f6372881cc24"",
                     ""expectedControlType"": ""Vector2"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -39,13 +48,46 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
             ],
             ""bindings"": [
                 {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""c86d7767-3430-49d5-aa49-0826319c5aab"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Turning"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""c2109d3b-f6fd-4629-a22a-ca3fb576190b"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Turning"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""d3288938-a40c-4a04-8495-38c5bbcf04b9"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Turning"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
                     ""name"": """",
-                    ""id"": ""1f30c4a8-9ab0-4cc1-958e-5228993f07b0"",
+                    ""id"": ""e819db4d-105f-476e-bb91-a2830c2db8d3"",
                     ""path"": ""<Mouse>/delta"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Movement"",
+                    ""action"": ""CameraRevolve"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -56,7 +98,8 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
 }");
         // Gameplay
         m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
-        m_Gameplay_Movement = m_Gameplay.FindAction("Movement", throwIfNotFound: true);
+        m_Gameplay_Turning = m_Gameplay.FindAction("Turning", throwIfNotFound: true);
+        m_Gameplay_CameraRevolve = m_Gameplay.FindAction("CameraRevolve", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -118,12 +161,14 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
     // Gameplay
     private readonly InputActionMap m_Gameplay;
     private List<IGameplayActions> m_GameplayActionsCallbackInterfaces = new List<IGameplayActions>();
-    private readonly InputAction m_Gameplay_Movement;
+    private readonly InputAction m_Gameplay_Turning;
+    private readonly InputAction m_Gameplay_CameraRevolve;
     public struct GameplayActions
     {
         private @CustomInput m_Wrapper;
         public GameplayActions(@CustomInput wrapper) { m_Wrapper = wrapper; }
-        public InputAction @Movement => m_Wrapper.m_Gameplay_Movement;
+        public InputAction @Turning => m_Wrapper.m_Gameplay_Turning;
+        public InputAction @CameraRevolve => m_Wrapper.m_Gameplay_CameraRevolve;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -133,16 +178,22 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_GameplayActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_GameplayActionsCallbackInterfaces.Add(instance);
-            @Movement.started += instance.OnMovement;
-            @Movement.performed += instance.OnMovement;
-            @Movement.canceled += instance.OnMovement;
+            @Turning.started += instance.OnTurning;
+            @Turning.performed += instance.OnTurning;
+            @Turning.canceled += instance.OnTurning;
+            @CameraRevolve.started += instance.OnCameraRevolve;
+            @CameraRevolve.performed += instance.OnCameraRevolve;
+            @CameraRevolve.canceled += instance.OnCameraRevolve;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
         {
-            @Movement.started -= instance.OnMovement;
-            @Movement.performed -= instance.OnMovement;
-            @Movement.canceled -= instance.OnMovement;
+            @Turning.started -= instance.OnTurning;
+            @Turning.performed -= instance.OnTurning;
+            @Turning.canceled -= instance.OnTurning;
+            @CameraRevolve.started -= instance.OnCameraRevolve;
+            @CameraRevolve.performed -= instance.OnCameraRevolve;
+            @CameraRevolve.canceled -= instance.OnCameraRevolve;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -162,6 +213,7 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
     public GameplayActions @Gameplay => new GameplayActions(this);
     public interface IGameplayActions
     {
-        void OnMovement(InputAction.CallbackContext context);
+        void OnTurning(InputAction.CallbackContext context);
+        void OnCameraRevolve(InputAction.CallbackContext context);
     }
 }
