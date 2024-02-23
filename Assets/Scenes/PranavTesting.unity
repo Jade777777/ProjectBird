@@ -698,6 +698,7 @@ MonoBehaviour:
   flySpeed: 2000
   rotSpeed: 0.8
   camRotSpeed: 1
+  maxCameraXRot: 45
   mouseDeltaDeadZone: 0.1
 --- !u!54 &1384623242
 Rigidbody:
