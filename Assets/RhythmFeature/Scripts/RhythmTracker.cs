@@ -26,6 +26,14 @@ public class RhythmTracker : MonoBehaviour
 
     bool streak = false;
 
+    public GameObject birdPrefab;
+
+    Animator birdAnimator;
+
+    private void Awake()
+    {
+        birdAnimator = birdPrefab.GetComponent<Animator>();
+    }
 
     private void Update()
     {
@@ -60,6 +68,9 @@ public class RhythmTracker : MonoBehaviour
             currentSteadyTarget += 0.1f;
             Debug.Log("Down Correct");
             streak = true;
+
+            //Play Flap Animation
+            birdAnimator.SetTrigger("Flap");
         }
 
 
