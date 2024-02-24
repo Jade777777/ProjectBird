@@ -5,6 +5,16 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+
+    public enum PlayerMovementState
+    {
+        Flying,
+        Grounded
+    };
+
+    [HideInInspector]
+    public PlayerMovementState playerMovementState = PlayerMovementState.Flying;
+
     [SerializeField]
     private GameObject cameraTarget;
     [SerializeField]
@@ -75,11 +85,21 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Update()
     {
-        HandleRhythm();
-        HandleRotation();
-        HandleCamera();
-        Movement();
-
+        switch (playerMovementState)
+        {
+            case PlayerMovementState.Grounded:
+            {
+                break;
+            }
+            case PlayerMovementState.Flying :
+            {
+                HandleRhythm();
+                HandleRotation();
+                HandleCamera();
+                Movement();
+                break;
+            }
+        }
     }
 
     private void FixedUpdate()
