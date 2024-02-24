@@ -10,9 +10,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float maxFlySpeed = 5f;
     [SerializeField]
-    private float rotSpeed = 1f;    
+    private float rotSpeed = 1f;
+
+    [Header("Camera")]
     [SerializeField]
     private float camRotSpeed = 1f;
+    [SerializeField]
+    private float camRotIncrement = 5f;
     [SerializeField]
     private float maxCameraXRot = 45f;
     [SerializeField]
@@ -31,6 +35,10 @@ public class PlayerMovement : MonoBehaviour
     private float currentYSpeed = 0;
     private float fallSpeed = 3f;
     private float maxRiseSpeed = 8f;
+
+
+    private Vector2 prevMousePos = Vector2.zero;
+    private Vector2 curMousePos = Vector2.zero;
     
 
 
@@ -51,21 +59,31 @@ public class PlayerMovement : MonoBehaviour
     private void OnEnable()
     {
         customInput.Enable();
-        customInput.Gameplay.CameraRevolve.performed += OnCameraRevolve;
+        //customInput.Gameplay.CameraRevolve.performed += OnCameraRevolve;
     }
 
     private void OnDisable()
     {
         customInput.Disable();
-        customInput.Gameplay.CameraRevolve.performed -= OnCameraRevolve;
+       // customInput.Gameplay.CameraRevolve.performed -= OnCameraRevolve;
 
     }
 
+    private void Start()
+    {
+        prevMousePos = Mouse.current.position.ReadValue();
+    }
     private void Update()
     {
         HandleRhythm();
         HandleRotation();
+        HandleCamera();
         Movement();
+
+    }
+
+    private void FixedUpdate()
+    {
 
     }
    
@@ -88,7 +106,11 @@ public class PlayerMovement : MonoBehaviour
             return;
         }
 
-        inputRotation = Quaternion.Euler(0, val * rotSpeed, 0);
+        inputRotation = Quaternion.Euler(0, val * rotSpeed * Time.deltaTime, 0);
+
+        // Player Rotation
+        transform.rotation *= inputRotation;
+        inputRotation = Quaternion.identity;
     }
 
     private void HandleRhythm()
@@ -119,37 +141,27 @@ public class PlayerMovement : MonoBehaviour
 
 
     // Camera revolves with mouse move if LMB is held down
-    private void OnCameraRevolve(InputAction.CallbackContext value)
+    private void HandleCamera()
     {
+
+        curMousePos = Mouse.current.position.ReadValue();
+        Vector2 mouseDelta = curMousePos - prevMousePos;
+        prevMousePos = curMousePos;
+
         if (!Mouse.current.leftButton.isPressed) return;
 
-        Vector2 val = value.ReadValue<Vector2>();
+        // Zeroing out if in dead zone
+        if (Mathf.Abs(mouseDelta.x) <= mouseDeltaDeadZone) mouseDelta.x = 0;
+        if (Mathf.Abs(mouseDelta.y) <= mouseDeltaDeadZone) mouseDelta.y = 0;
 
-        if (Mathf.Abs(val.x) <= mouseDeltaDeadZone) val.x = 0;
-        if (Mathf.Abs(val.y) <= mouseDeltaDeadZone) val.y = 0;
+        //val.Normalize();
 
-        val.Normalize();
-
-        cameraTargetRotation = Quaternion.Euler(val.y * camRotSpeed, val.x * camRotSpeed, 0);
-    }
-
-    private void FixedUpdate()
-    {
-       
-    }
-
-    private void Movement()
-    {
-        characterController.Move((transform.forward * currentSpeed + transform.up * currentYSpeed) * Time.deltaTime);
-
-        // Player Rotation
-        transform.rotation *= inputRotation;
-        inputRotation = Quaternion.identity;
+        cameraTargetRotation =  Quaternion.AngleAxis(mouseDelta.x * camRotSpeed * Time.deltaTime, Vector3.up) * 
+                                Quaternion.AngleAxis(mouseDelta.y * camRotSpeed * Time.deltaTime, Vector3.right);
 
         // Camera Rotation
-        cameraTarget.transform.rotation *= cameraTargetRotation;
+        cameraTarget.transform.rotation = cameraTargetRotation * cameraTarget.transform.rotation;
         cameraTargetRotation = Quaternion.identity;
-
 
         // Clamping rotation on x axis to prevent camera from going upside-down
         var angles = cameraTarget.transform.localEulerAngles;
@@ -163,6 +175,14 @@ public class PlayerMovement : MonoBehaviour
         }
 
         cameraTarget.transform.localEulerAngles = angles;
+
+        
+    }
+
+
+    private void Movement()
+    {
+        characterController.Move((transform.forward * currentSpeed + transform.up * currentYSpeed) * Time.deltaTime);
 
     }
 }
