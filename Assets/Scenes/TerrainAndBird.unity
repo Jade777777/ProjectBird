@@ -1557,6 +1557,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player Y Integration
       objectReference: {fileID: 0}
+    - target: {fileID: 5949017077880248290, guid: 5c09dfa4c16028146b8b6682345677de,
+        type: 3}
+      propertyPath: minVelocity
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8681528195744096958, guid: 5c09dfa4c16028146b8b6682345677de,
         type: 3}
       propertyPath: m_RootOrder
