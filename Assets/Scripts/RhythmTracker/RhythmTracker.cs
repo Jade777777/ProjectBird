@@ -55,10 +55,15 @@ public class RhythmTracker : MonoBehaviour
     public bool IsSuccess { get; private set; }
 
     private CustomInput customInput = null;
+
+    Animator birdAnimator;
+
     private void Awake()
     {
         
         customInput = new CustomInput();
+
+        birdAnimator = gameObject.GetComponentInChildren<Animator>();
     }
 
     private void OnEnable()
@@ -118,6 +123,8 @@ public class RhythmTracker : MonoBehaviour
             }
             currentStreak = Mathf.Clamp(currentStreak, 0, maxStreak);
             IsFlapping = true;
+
+            birdAnimator.SetTrigger("Flap");
         }
 
     }
