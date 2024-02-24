@@ -820,8 +820,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 978354182}
-  m_LocalRotation: {x: 0.40107355, y: 0.000000027300297, z: -0.000000011952925, w: 0.91604584}
-  m_LocalPosition: {x: 38.5, y: -11.670088, z: -82.688225}
+  m_LocalRotation: {x: 0.107050315, y: 0.0000000074077677, z: -7.9758705e-10, w: 0.99425364}
+  m_LocalPosition: {x: 38.5, y: -16.893593, z: -85.67862}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1085,8 +1085,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1377203398}
-  m_LocalRotation: {x: 0.40107355, y: 0.000000027300297, z: -0.000000011952925, w: 0.91604584}
-  m_LocalPosition: {x: 38.5, y: -11.670088, z: -82.688225}
+  m_LocalRotation: {x: 0.107050315, y: 0.0000000074077677, z: -7.9758705e-10, w: 0.99425364}
+  m_LocalPosition: {x: 38.5, y: -16.893593, z: -85.67862}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1657,12 +1657,12 @@ PrefabInstance:
     - target: {fileID: 1870979077032963169, guid: 5c09dfa4c16028146b8b6682345677de,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.92387956
+      value: 0.9961947
       objectReference: {fileID: 0}
     - target: {fileID: 1870979077032963169, guid: 5c09dfa4c16028146b8b6682345677de,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.38268343
+      value: 0.08715578
       objectReference: {fileID: 0}
     - target: {fileID: 1870979077032963169, guid: 5c09dfa4c16028146b8b6682345677de,
         type: 3}
@@ -1677,7 +1677,7 @@ PrefabInstance:
     - target: {fileID: 1870979077032963169, guid: 5c09dfa4c16028146b8b6682345677de,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 45
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1870979077032963169, guid: 5c09dfa4c16028146b8b6682345677de,
         type: 3}
@@ -1692,12 +1692,12 @@ PrefabInstance:
     - target: {fileID: 7271984723678944116, guid: 5c09dfa4c16028146b8b6682345677de,
         type: 3}
       propertyPath: rotSpeed
-      value: 0.8
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 7271984723678944116, guid: 5c09dfa4c16028146b8b6682345677de,
         type: 3}
       propertyPath: camRotSpeed
-      value: 0.2
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 7271984723678944116, guid: 5c09dfa4c16028146b8b6682345677de,
         type: 3}
