@@ -519,10 +519,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraTarget: {fileID: 7151624746536205965}
   maxFlySpeed: 10
-  rotSpeed: 0.05
-  camRotSpeed: 1
+  rotSpeed: 50
+  camRotSpeed: 15
+  camRotIncrement: 5
   maxCameraXRot: 45
-  mouseDeltaDeadZone: 0.1
+  mouseDeltaDeadZone: 1
   birdPrefab: {fileID: 5994803221290082090}
 --- !u!114 &5949017077880248290
 MonoBehaviour:
