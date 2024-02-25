@@ -32,8 +32,10 @@ public class OnboardingBehavior : MonoBehaviour
 
     public void Continue()
     {
+        //Continue the onboarding process each time the continue button is clicked
         switch (onboardingState)
         {
+            //Show controls and onboard the player
             case 1:
                 onboardingPanel.GetComponent<RectTransform>().localPosition = new Vector3(-24, -341, 0);
                 text.text = "The controls for the game are listed here in the bottom left. \n<--";
@@ -41,6 +43,7 @@ public class OnboardingBehavior : MonoBehaviour
                 onboardingState++;
                 break;
 
+            //Show flight meter and onboard the player
             case 2:
                 onboardingPanel.GetComponent<RectTransform>().localPosition = new Vector3(0, 116, 0);
                 text.text = "Up here is your flight meter. Press Spacebar when the circle is in the green zone to effectively flap your wings.";
@@ -49,6 +52,7 @@ public class OnboardingBehavior : MonoBehaviour
                 onboardingState++;
                 break;
 
+            //Close the window and unpause the game
             case 3:
                 onboardingPanel.SetActive(false);
                 Time.timeScale = 1.0f;
