@@ -2,13 +2,13 @@
 {
     public struct Parameter
     {
-        public string ParameterName { get; private set; }
-        public string ParameterValue { get; private set; }
+        public string Name { get; private set; }
+        public string Value { get; private set; }
 
-        public Parameter(string parameterName, string parameterValue)
+        public Parameter(string name, string value)
         {
-            ParameterName = parameterName;
-            ParameterValue = parameterValue;
+            Name = name;
+            Value = value;
         }
     }
 }

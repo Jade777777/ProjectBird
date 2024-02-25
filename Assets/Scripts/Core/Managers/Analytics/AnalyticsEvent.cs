@@ -2,26 +2,27 @@
 
 namespace Core.Managers.Analytics
 {
-    public class AnalyticsEvent : GameEvent
+    public sealed class AnalyticsEvent : GameEvent
     {
-        public string EventName { get; private set; }
+        public string Name { get; private set; }
 
         public List<Parameter> Parameters { get; private set; }
 
-        public AnalyticsEvent(string eventName)
+        public AnalyticsEvent(string name)
         {
-            EventName = eventName;
+            Name = name;
             Parameters = new List<Parameter>();
         }
 
-        public void AddParameter(string parameterName, string parameterValue)
+        public AnalyticsEvent AddParameter(string parameterName, string parameterValue)
         {
-            AddParameter(new Parameter(parameterName, parameterValue));
+            return AddParameter(new Parameter(parameterName, parameterValue));
         }
 
-        public void AddParameter(Parameter parameter)
+        public AnalyticsEvent AddParameter(Parameter parameter)
         {
             Parameters.Add(parameter);
+            return this;
         }
     }
 }
