@@ -24,11 +24,17 @@ public class RhythmTracker : MonoBehaviour
     [Header("Streak")]
     [SerializeField, Tooltip("The streak that must be achieved to reach maximum accuracy")]
     int maxStreak = 10;
+    [SerializeField, Tooltip("The rate at which the streak decays when not flapping at a rate of Streaks/Second")]
+    float streakDecay = 0.2f;
 
+    [Header("Debug Info")]
     [SerializeField, Tooltip("The current streak, this should be zero when the game is not running")]
-    int currentStreak = 0;
+    float currentStreak = 0;
 
-
+    /// <summary>
+    /// When this value is true, the streak will not decay.
+    /// </summary>
+    public bool ProtectStreak = false;
     /// <summary>
     /// Range of 0 to 1, 0 being downward wing position, 1 being upward.
     /// </summary>
@@ -45,6 +51,7 @@ public class RhythmTracker : MonoBehaviour
     /// Is the current position within range to increase the streak.
     /// </summary>
     public bool IsTarget { get { return CurrentPosition > targetMin && CurrentPosition < targetMax; } }
+    public bool IsOverTarget { get { return CurrentPosition > targetMax; } }
     /// <summary>
     /// Is the player currently flapping the wings downward.
     /// </summary>
@@ -60,9 +67,7 @@ public class RhythmTracker : MonoBehaviour
 
     private void Awake()
     {
-        
         customInput = new CustomInput();
-
         birdAnimator = gameObject.GetComponentInChildren<Animator>();
     }
 
@@ -80,6 +85,15 @@ public class RhythmTracker : MonoBehaviour
 
     private void Update()
     {
+        if (currentStreak > 0)
+        {
+            if (!ProtectStreak) 
+                currentStreak -= streakDecay * Time.deltaTime;
+        }
+        else
+        {
+            currentStreak = 0;
+        }
         if(IsFlapping)
         {
             CurrentPosition -= CurrentVelocity * Time.deltaTime;
@@ -116,6 +130,10 @@ public class RhythmTracker : MonoBehaviour
                 currentStreak++;
                 IsSuccess = true;
             }
+            else if (IsOverTarget)
+            {
+                IsSuccess = false;
+            }
             else
             {
                 currentStreak--;
@@ -128,6 +146,12 @@ public class RhythmTracker : MonoBehaviour
         }
 
     }
+    public void ResetStreak()
+    {
+        currentStreak = 0;
+    }
+
+
 
     //Debug code to help visualize success
     private void OnDrawGizmos()

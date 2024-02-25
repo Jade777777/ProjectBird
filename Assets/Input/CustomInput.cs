@@ -53,6 +53,15 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Dive"",
+                    ""type"": ""Button"",
+                    ""id"": ""339fa402-1b03-40df-9740-5471956067bb"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -110,6 +119,28 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
                     ""action"": ""Flap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d12f12b0-834e-4b84-9d55-574d81dbc055"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dive"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d901e7fa-8dac-4657-82b5-969415b01aea"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dive"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -121,6 +152,7 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
         m_Gameplay_Turning = m_Gameplay.FindAction("Turning", throwIfNotFound: true);
         m_Gameplay_CameraRevolve = m_Gameplay.FindAction("CameraRevolve", throwIfNotFound: true);
         m_Gameplay_Flap = m_Gameplay.FindAction("Flap", throwIfNotFound: true);
+        m_Gameplay_Dive = m_Gameplay.FindAction("Dive", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -185,6 +217,7 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_Turning;
     private readonly InputAction m_Gameplay_CameraRevolve;
     private readonly InputAction m_Gameplay_Flap;
+    private readonly InputAction m_Gameplay_Dive;
     public struct GameplayActions
     {
         private @CustomInput m_Wrapper;
@@ -192,6 +225,7 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
         public InputAction @Turning => m_Wrapper.m_Gameplay_Turning;
         public InputAction @CameraRevolve => m_Wrapper.m_Gameplay_CameraRevolve;
         public InputAction @Flap => m_Wrapper.m_Gameplay_Flap;
+        public InputAction @Dive => m_Wrapper.m_Gameplay_Dive;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -210,6 +244,9 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
             @Flap.started += instance.OnFlap;
             @Flap.performed += instance.OnFlap;
             @Flap.canceled += instance.OnFlap;
+            @Dive.started += instance.OnDive;
+            @Dive.performed += instance.OnDive;
+            @Dive.canceled += instance.OnDive;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -223,6 +260,9 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
             @Flap.started -= instance.OnFlap;
             @Flap.performed -= instance.OnFlap;
             @Flap.canceled -= instance.OnFlap;
+            @Dive.started -= instance.OnDive;
+            @Dive.performed -= instance.OnDive;
+            @Dive.canceled -= instance.OnDive;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -245,5 +285,6 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
         void OnTurning(InputAction.CallbackContext context);
         void OnCameraRevolve(InputAction.CallbackContext context);
         void OnFlap(InputAction.CallbackContext context);
+        void OnDive(InputAction.CallbackContext context);
     }
 }
