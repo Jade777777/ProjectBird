@@ -24,9 +24,12 @@ public class RhythmTracker : MonoBehaviour
     [Header("Streak")]
     [SerializeField, Tooltip("The streak that must be achieved to reach maximum accuracy")]
     int maxStreak = 10;
+    [SerializeField, Tooltip("The rate at which the streak decays when not flapping at a rate of Streaks/Second")]
+    float streakDecay = 0.2f;
 
+    [Header("Debug Info")]
     [SerializeField, Tooltip("The current streak, this should be zero when the game is not running")]
-    int currentStreak = 0;
+    float currentStreak = 0;
 
 
     /// <summary>
@@ -45,6 +48,7 @@ public class RhythmTracker : MonoBehaviour
     /// Is the current position within range to increase the streak.
     /// </summary>
     public bool IsTarget { get { return CurrentPosition > targetMin && CurrentPosition < targetMax; } }
+    public bool IsOverTarget { get { return CurrentPosition > targetMax; } }
     /// <summary>
     /// Is the player currently flapping the wings downward.
     /// </summary>
@@ -80,6 +84,14 @@ public class RhythmTracker : MonoBehaviour
 
     private void Update()
     {
+        if (currentStreak > 0)
+        {
+            currentStreak -= streakDecay * Time.deltaTime;
+        }
+        else
+        {
+            currentStreak = 0;
+        }
         if(IsFlapping)
         {
             CurrentPosition -= CurrentVelocity * Time.deltaTime;
@@ -116,6 +128,10 @@ public class RhythmTracker : MonoBehaviour
                 currentStreak++;
                 IsSuccess = true;
             }
+            else if (IsOverTarget)
+            {
+                IsSuccess = false;
+            }
             else
             {
                 currentStreak--;
@@ -127,6 +143,10 @@ public class RhythmTracker : MonoBehaviour
             birdAnimator.SetTrigger("Flap");
         }
 
+    }
+    public void ResetStreak()
+    {
+        currentStreak = 0;
     }
 
     //Debug code to help visualize success

@@ -17,8 +17,7 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField]
     private GameObject cameraTarget;
-    [SerializeField]
-    private float maxFlySpeed = 5f;
+
     [SerializeField]
     private float rotSpeed = 1f;
 
@@ -40,11 +39,34 @@ public class PlayerMovement : MonoBehaviour
     private Quaternion cameraTargetRotation = Quaternion.identity;
 
 
+    [Header("Flight")]
+    [SerializeField]
+    private float maxFlySpeed = 5f;
+    [SerializeField]
+    private float minFlySpeed = 1f;
 
-    private float currentSpeed=0 ;
-    private float currentYSpeed = 0;
-    private float fallSpeed = 3f;
+
+    [SerializeField]
+    private float glideYVelocity = -3f;
+    [SerializeField]
     private float maxRiseSpeed = 8f;
+    [SerializeField]
+    private float gravity = -9.81f;
+    [SerializeField]
+    private float fallTime = 5f;
+    [SerializeField,Range(0,90)]
+    private float groundAngle = 45f;
+
+
+    private float currentYSpeed = 0;
+    private float currentFlySpeed = 0;
+    private bool isFalling = false;
+    private float fallTimer = 0;
+    private Vector3 hitNormal;
+    
+
+
+    private RhythmTracker rhythmTracker; 
 
 
     private Vector2 prevMousePos = Vector2.zero;
@@ -62,8 +84,8 @@ public class PlayerMovement : MonoBehaviour
     {
         customInput = new CustomInput();
         characterController = GetComponent<CharacterController>();
-
         birdAnimator = birdPrefab.GetComponent<Animator>();
+        rhythmTracker = GetComponent<RhythmTracker>();
     }
 
     private void OnEnable()
@@ -101,11 +123,6 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
-
-    private void FixedUpdate()
-    {
-
-    }
    
     // Handles rotating the player.
     private void HandleRotation()
@@ -132,30 +149,64 @@ public class PlayerMovement : MonoBehaviour
         transform.rotation *= inputRotation;
         inputRotation = Quaternion.identity;
     }
+    
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        hitNormal = hit.normal;
+        if (Vector3.Angle(hit.normal, Vector3.up) > groundAngle && !isFalling)
+        {
+            isFalling = true;
+            rhythmTracker.ResetStreak();
+            Debug.Log("Hit Something!");
+        }
+    }
 
     private void HandleRhythm()
     {
-        
-        if (GetComponent<RhythmTracker>().IsFlapping)
+        if (isFalling)
         {
-            currentYSpeed = maxRiseSpeed*GetComponent<RhythmTracker>().Accuracy;
-            currentYSpeed = Mathf.Clamp(currentYSpeed, fallSpeed, maxRiseSpeed);
+            if (rhythmTracker.IsFlapping&& rhythmTracker.IsSuccess)//only stop falling if building a streak
+            {
+                currentYSpeed = 0;
+            }
+            else
+            {
+                currentYSpeed = Mathf.Clamp(currentYSpeed, -100, glideYVelocity);
+                currentYSpeed += gravity * Time.deltaTime;
+
+            }
+            fallTimer += Time.deltaTime;
+            if (fallTimer > fallTime)
+            {
+                isFalling = false;
+                fallTimer = 0;
+            }
+            Debug.Log("Falling!");
         }
         else
         {
-            currentYSpeed = -fallSpeed;
-
+            if (rhythmTracker.IsFlapping)
+            {
+                currentYSpeed = maxRiseSpeed * rhythmTracker.Accuracy;
+                currentYSpeed = Mathf.Clamp(currentYSpeed, -glideYVelocity, maxRiseSpeed);
+            }
+            else
+            {
+                currentYSpeed = Mathf.Clamp(currentYSpeed, -100, glideYVelocity);
+            }
         }
+
         if (GetComponent<CharacterController>().isGrounded)
         {
-            currentSpeed = 0;
+            currentFlySpeed = 0;
+            Debug.Log("Grounded!");
         }
         else
         {
-            currentSpeed = GetComponent<RhythmTracker>().Accuracy * maxFlySpeed;
+            currentFlySpeed = Mathf.Lerp(minFlySpeed, maxFlySpeed, rhythmTracker.Accuracy);
         }
 
-        currentSpeed = Mathf.Clamp(currentSpeed, 0, maxFlySpeed);
+        currentFlySpeed = Mathf.Clamp(currentFlySpeed, 0, maxFlySpeed);
      
     }
 
@@ -202,7 +253,19 @@ public class PlayerMovement : MonoBehaviour
 
     private void Movement()
     {
-        characterController.Move((transform.forward * currentSpeed + transform.up * currentYSpeed) * Time.deltaTime);
+        Vector3 movement;
+        if (!isFalling)
+        {
+            movement = transform.forward * currentFlySpeed;
+        }
+        else
+        {
+            movement = hitNormal * currentFlySpeed;
+            
+        }
+        movement.y = currentYSpeed;
+        characterController.Move(movement*Time.deltaTime);
+
 
     }
 }
