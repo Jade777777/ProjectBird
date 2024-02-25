@@ -2371,6 +2371,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pauseScreen: {fileID: 789331060}
   gameUI: {fileID: 760598292}
+  onboardingPanel: {fileID: 0}
 --- !u!114 &1807013808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2829,6 +2830,11 @@ PrefabInstance:
         type: 3}
       propertyPath: minFlySpeed
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7271984723678944116, guid: 5c09dfa4c16028146b8b6682345677de,
+        type: 3}
+      propertyPath: diveAcceleration
+      value: -30
       objectReference: {fileID: 0}
     - target: {fileID: 7271984723678944116, guid: 5c09dfa4c16028146b8b6682345677de,
         type: 3}

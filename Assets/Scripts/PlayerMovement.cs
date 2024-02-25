@@ -49,6 +49,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float glideYVelocity = -3f;
     [SerializeField]
+    private float diveAcceleration = -30;
+    [SerializeField]
     private float maxRiseSpeed = 8f;
     [SerializeField]
     private float gravity = -9.81f;
@@ -171,9 +173,8 @@ public class PlayerMovement : MonoBehaviour
             }
             else
             {
-                currentYSpeed = Mathf.Clamp(currentYSpeed, -100, glideYVelocity);
                 currentYSpeed += gravity * Time.deltaTime;
-
+                currentYSpeed = Mathf.Clamp(currentYSpeed, -100, glideYVelocity);
             }
             fallTimer += Time.deltaTime;
             if (fallTimer > fallTime)
@@ -185,7 +186,13 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            if (rhythmTracker.IsFlapping)
+            if (customInput.Gameplay.Dive.IsPressed())
+            {
+
+                currentYSpeed += diveAcceleration * Time.deltaTime;
+                currentYSpeed = Mathf.Clamp(currentYSpeed, -100, glideYVelocity);
+            }
+            else if (rhythmTracker.IsFlapping)
             {
                 currentYSpeed = maxRiseSpeed * rhythmTracker.Accuracy;
                 currentYSpeed = Mathf.Clamp(currentYSpeed, -glideYVelocity, maxRiseSpeed);
