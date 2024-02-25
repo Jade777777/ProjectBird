@@ -6,10 +6,12 @@ using TMPro;
 
 public class OnboardingBehavior : MonoBehaviour
 {
+    //References to UI panels
     public GameObject onboardingPanel;
     public GameObject controls;
     public GameObject flightMeter;
 
+    //Variables
     int onboardingState;
     TextMeshProUGUI text;
     TextMeshProUGUI buttonText;
@@ -17,10 +19,12 @@ public class OnboardingBehavior : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //Pause Game and disable game UI elements
         Time.timeScale = 0.0f;
         controls.SetActive(false);
         flightMeter.SetActive(false);
 
+        //Set onboarding state to the start and set the text variables
         onboardingState = 1;
         text = onboardingPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         buttonText = onboardingPanel.transform.GetChild(1).GetComponent<TextMeshProUGUI>();

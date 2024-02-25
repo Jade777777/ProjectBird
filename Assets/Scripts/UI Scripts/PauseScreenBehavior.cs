@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 //UI Script originally developed by Kevin Insinna
 public class PauseScreenBehavior : MonoBehaviour
 {
+    //Variables
     bool isPaused = false;
     public GameObject pauseScreen;
     public GameObject gameUI;
