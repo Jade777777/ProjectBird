@@ -31,7 +31,10 @@ public class RhythmTracker : MonoBehaviour
     [SerializeField, Tooltip("The current streak, this should be zero when the game is not running")]
     float currentStreak = 0;
 
-
+    /// <summary>
+    /// When this value is true, the streak will not decay.
+    /// </summary>
+    public bool ProtectStreak = false;
     /// <summary>
     /// Range of 0 to 1, 0 being downward wing position, 1 being upward.
     /// </summary>
@@ -64,9 +67,7 @@ public class RhythmTracker : MonoBehaviour
 
     private void Awake()
     {
-        
         customInput = new CustomInput();
-
         birdAnimator = gameObject.GetComponentInChildren<Animator>();
     }
 
@@ -86,7 +87,8 @@ public class RhythmTracker : MonoBehaviour
     {
         if (currentStreak > 0)
         {
-            currentStreak -= streakDecay * Time.deltaTime;
+            if (!ProtectStreak) 
+                currentStreak -= streakDecay * Time.deltaTime;
         }
         else
         {
@@ -148,6 +150,8 @@ public class RhythmTracker : MonoBehaviour
     {
         currentStreak = 0;
     }
+
+
 
     //Debug code to help visualize success
     private void OnDrawGizmos()

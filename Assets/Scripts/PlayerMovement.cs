@@ -1,3 +1,4 @@
+using Cinemachine.Utility;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -51,6 +52,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private float diveAcceleration = -30;
     [SerializeField]
+    private float diveSreakBuilder = 1f;
+    [SerializeField]
     private float maxRiseSpeed = 8f;
     [SerializeField]
     private float gravity = -9.81f;
@@ -62,6 +65,7 @@ public class PlayerMovement : MonoBehaviour
 
     private float currentYSpeed = 0;
     private float currentFlySpeed = 0;
+    private bool isDiving = false;
     private bool isFalling = false;
     private float fallTimer = 0;
     private Vector3 hitNormal;
@@ -165,6 +169,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleRhythm()
     {
+        isDiving = false;
+        rhythmTracker.ProtectStreak = false;//only true when diving
         if (isFalling)
         {
             if (rhythmTracker.IsFlapping&& rhythmTracker.IsSuccess)//only stop falling if building a streak
@@ -188,9 +194,11 @@ public class PlayerMovement : MonoBehaviour
         {
             if (customInput.Gameplay.Dive.IsPressed())
             {
-
                 currentYSpeed += diveAcceleration * Time.deltaTime;
                 currentYSpeed = Mathf.Clamp(currentYSpeed, -100, glideYVelocity);
+                rhythmTracker.ProtectStreak = true;
+                isDiving = true;
+                
             }
             else if (rhythmTracker.IsFlapping)
             {
@@ -201,6 +209,8 @@ public class PlayerMovement : MonoBehaviour
             {
                 currentYSpeed = Mathf.Clamp(currentYSpeed, -100, glideYVelocity);
             }
+            currentFlySpeed = Mathf.Lerp(minFlySpeed, maxFlySpeed, rhythmTracker.Accuracy);
+            currentFlySpeed = Mathf.Clamp(currentFlySpeed, 0, maxFlySpeed);
         }
 
         if (GetComponent<CharacterController>().isGrounded)
@@ -208,12 +218,8 @@ public class PlayerMovement : MonoBehaviour
             currentFlySpeed = 0;
             Debug.Log("Grounded!");
         }
-        else
-        {
-            currentFlySpeed = Mathf.Lerp(minFlySpeed, maxFlySpeed, rhythmTracker.Accuracy);
-        }
 
-        currentFlySpeed = Mathf.Clamp(currentFlySpeed, 0, maxFlySpeed);
+        
      
     }
 
@@ -264,6 +270,7 @@ public class PlayerMovement : MonoBehaviour
         if (!isFalling)
         {
             movement = transform.forward * currentFlySpeed;
+            
         }
         else
         {
@@ -271,6 +278,19 @@ public class PlayerMovement : MonoBehaviour
             
         }
         movement.y = currentYSpeed;
+        if (isDiving)
+        {
+            //Make it more forgiving if a player wants to try to graze a cliff
+            if(Physics.SphereCast(transform.position,characterController.radius,Vector3.down,out RaycastHit hit ,Mathf.Abs(movement.y) * Time.deltaTime+0.5f, 1<<LayerMask.NameToLayer("Default")))
+            {
+                Vector3 skimDirection = movement.ProjectOntoPlane(hit.normal);
+                skimDirection = skimDirection.normalized; 
+                skimDirection*= movement.magnitude;
+                if(Vector3.Angle(skimDirection,movement)<45)
+                    movement = skimDirection;
+            }
+        }
+        
         characterController.Move(movement*Time.deltaTime);
 
 

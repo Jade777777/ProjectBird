@@ -2828,8 +2828,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7271984723678944116, guid: 5c09dfa4c16028146b8b6682345677de,
         type: 3}
+      propertyPath: maxFlySpeed
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7271984723678944116, guid: 5c09dfa4c16028146b8b6682345677de,
+        type: 3}
       propertyPath: minFlySpeed
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7271984723678944116, guid: 5c09dfa4c16028146b8b6682345677de,
+        type: 3}
+      propertyPath: maxRiseSpeed
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 7271984723678944116, guid: 5c09dfa4c16028146b8b6682345677de,
         type: 3}
