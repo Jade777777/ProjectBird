@@ -6,14 +6,16 @@ using UnityEngine.SceneManagement;
 //UI Script originally developed by Kevin Insinna
 public class PauseScreenBehavior : MonoBehaviour
 {
+    //Variables
     bool isPaused = false;
     public GameObject pauseScreen;
     public GameObject gameUI;
+    public GameObject onboardingPanel;
 
     private void Update()
     {
         //Pause when Escape key is pressed
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && !onboardingPanel.activeInHierarchy)
         {
             PauseGame();
         }
