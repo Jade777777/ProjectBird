@@ -143,6 +143,98 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Grounded"",
+            ""id"": ""f79ec47b-61e6-421c-a396-b30232abe3ae"",
+            ""actions"": [
+                {
+                    ""name"": ""Movement"",
+                    ""type"": ""Value"",
+                    ""id"": ""2e9b09c5-1f5c-46e6-befe-92836aede252"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""TakeOff"",
+                    ""type"": ""Button"",
+                    ""id"": ""8178e735-c420-4bd3-a6a8-1d4dbc4011f2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": ""2D Vector"",
+                    ""id"": ""4a2a683f-9d7b-4d8b-b457-e1c4eb2495a7"",
+                    ""path"": ""2DVector"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""up"",
+                    ""id"": ""c202b1fa-b917-4201-a4e4-fb03d0136960"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""down"",
+                    ""id"": ""5283e41d-e595-4ee4-90eb-793435b39571"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""left"",
+                    ""id"": ""29c39496-391a-421d-8986-b10223f57ce4"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""right"",
+                    ""id"": ""2ca295db-d5c4-41e5-8289-c4972570f488"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d922b6f4-5a53-4601-9860-b70a476e8b0f"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TakeOff"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -153,6 +245,10 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
         m_Gameplay_CameraRevolve = m_Gameplay.FindAction("CameraRevolve", throwIfNotFound: true);
         m_Gameplay_Flap = m_Gameplay.FindAction("Flap", throwIfNotFound: true);
         m_Gameplay_Dive = m_Gameplay.FindAction("Dive", throwIfNotFound: true);
+        // Grounded
+        m_Grounded = asset.FindActionMap("Grounded", throwIfNotFound: true);
+        m_Grounded_Movement = m_Grounded.FindAction("Movement", throwIfNotFound: true);
+        m_Grounded_TakeOff = m_Grounded.FindAction("TakeOff", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -280,11 +376,70 @@ public partial class @CustomInput: IInputActionCollection2, IDisposable
         }
     }
     public GameplayActions @Gameplay => new GameplayActions(this);
+
+    // Grounded
+    private readonly InputActionMap m_Grounded;
+    private List<IGroundedActions> m_GroundedActionsCallbackInterfaces = new List<IGroundedActions>();
+    private readonly InputAction m_Grounded_Movement;
+    private readonly InputAction m_Grounded_TakeOff;
+    public struct GroundedActions
+    {
+        private @CustomInput m_Wrapper;
+        public GroundedActions(@CustomInput wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Movement => m_Wrapper.m_Grounded_Movement;
+        public InputAction @TakeOff => m_Wrapper.m_Grounded_TakeOff;
+        public InputActionMap Get() { return m_Wrapper.m_Grounded; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(GroundedActions set) { return set.Get(); }
+        public void AddCallbacks(IGroundedActions instance)
+        {
+            if (instance == null || m_Wrapper.m_GroundedActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_GroundedActionsCallbackInterfaces.Add(instance);
+            @Movement.started += instance.OnMovement;
+            @Movement.performed += instance.OnMovement;
+            @Movement.canceled += instance.OnMovement;
+            @TakeOff.started += instance.OnTakeOff;
+            @TakeOff.performed += instance.OnTakeOff;
+            @TakeOff.canceled += instance.OnTakeOff;
+        }
+
+        private void UnregisterCallbacks(IGroundedActions instance)
+        {
+            @Movement.started -= instance.OnMovement;
+            @Movement.performed -= instance.OnMovement;
+            @Movement.canceled -= instance.OnMovement;
+            @TakeOff.started -= instance.OnTakeOff;
+            @TakeOff.performed -= instance.OnTakeOff;
+            @TakeOff.canceled -= instance.OnTakeOff;
+        }
+
+        public void RemoveCallbacks(IGroundedActions instance)
+        {
+            if (m_Wrapper.m_GroundedActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IGroundedActions instance)
+        {
+            foreach (var item in m_Wrapper.m_GroundedActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_GroundedActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public GroundedActions @Grounded => new GroundedActions(this);
     public interface IGameplayActions
     {
         void OnTurning(InputAction.CallbackContext context);
         void OnCameraRevolve(InputAction.CallbackContext context);
         void OnFlap(InputAction.CallbackContext context);
         void OnDive(InputAction.CallbackContext context);
+    }
+    public interface IGroundedActions
+    {
+        void OnMovement(InputAction.CallbackContext context);
+        void OnTakeOff(InputAction.CallbackContext context);
     }
 }
