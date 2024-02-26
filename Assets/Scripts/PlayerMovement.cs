@@ -92,6 +92,7 @@ public class PlayerMovement : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         birdAnimator = birdPrefab.GetComponent<Animator>();
         rhythmTracker = GetComponent<RhythmTracker>();
+
     }
 
     private void OnEnable()
@@ -117,6 +118,9 @@ public class PlayerMovement : MonoBehaviour
         {
             case PlayerMovementState.Grounded:
             {
+                    Debug.Log("Ground");
+                    birdAnimator.SetTrigger("GroundIdle");
+
                 break;
             }
             case PlayerMovementState.Flying :
@@ -141,11 +145,12 @@ public class PlayerMovement : MonoBehaviour
         if(customInput.Gameplay.Turning.IsPressed())
         {
             birdAnimator.SetFloat("flyingDirectionX", val);
-            birdAnimator.SetBool("flying", false);
+            //birdAnimator.SetBool("flying", false);
         }
         else
         {
-            birdAnimator.SetBool("flying", true);
+            birdAnimator.SetBool("Fly", true);
+            //birdAnimator.SetBool("flying", true);
             return;
         }
 
@@ -169,6 +174,17 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleRhythm()
     {
+        //Check if the bird is flying upwards or downwards
+        if(currentYSpeed <= 0)
+        {
+            birdAnimator.SetBool("Dive",true);
+        }
+
+        if(currentYSpeed >0)
+        {
+            birdAnimator.SetBool("Dive", false);
+        }
+
         isDiving = false;
         rhythmTracker.ProtectStreak = false;//only true when diving
         if (isFalling)
@@ -188,7 +204,7 @@ public class PlayerMovement : MonoBehaviour
                 isFalling = false;
                 fallTimer = 0;
             }
-            Debug.Log("Falling!");
+            //Debug.Log("Falling!");
         }
         else
         {
@@ -198,7 +214,7 @@ public class PlayerMovement : MonoBehaviour
                 currentYSpeed = Mathf.Clamp(currentYSpeed, -100, glideYVelocity);
                 rhythmTracker.ProtectStreak = true;
                 isDiving = true;
-                
+
             }
             else if (rhythmTracker.IsFlapping)
             {
@@ -217,6 +233,7 @@ public class PlayerMovement : MonoBehaviour
         {
             currentFlySpeed = 0;
             Debug.Log("Grounded!");
+            birdAnimator.SetTrigger("GroundIdle");
         }
 
         
