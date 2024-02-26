@@ -126,6 +126,8 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Update()
     {
+        rhythmTracker.ProtectStreak = false;//only true when diving
+
         CheckIfGrounded();
 
         HandleCamera();
@@ -133,17 +135,21 @@ public class PlayerMovement : MonoBehaviour
         {
             case PlayerMovementState.Grounded:
             {
+                isFalling = false;
+                rhythmTracker.IncreasedDecay(true);
                 HandleGroundMovement();
                 break;
             }
             case PlayerMovementState.Flying :
             {
+                rhythmTracker.IncreasedDecay(false);
                 HandleRhythm();
                 HandleRotation();
                 Movement();
                 break;
             }
         }
+        fallTimer += Time.deltaTime;
     }
    
     // Raycasting down to check if hitting ground
@@ -230,6 +236,7 @@ public class PlayerMovement : MonoBehaviour
         if (Vector3.Angle(hit.normal, Vector3.up) > groundAngle && !isFalling)
         {
             isFalling = true;
+            fallTimer = 0;
             rhythmTracker.ResetStreak();
             Debug.Log("Hit Something!");
         }
@@ -237,8 +244,9 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleRhythm()
     {
+        
         isDiving = false;
-        rhythmTracker.ProtectStreak = false;//only true when diving
+        
         if (isFalling)
         {
             if (rhythmTracker.IsFlapping&& rhythmTracker.IsSuccess)//only stop falling if building a streak
@@ -250,11 +258,10 @@ public class PlayerMovement : MonoBehaviour
                 currentYSpeed += gravity * Time.deltaTime;
                 currentYSpeed = Mathf.Clamp(currentYSpeed, -100, glideYVelocity);
             }
-            fallTimer += Time.deltaTime;
+            
             if (fallTimer > fallTime)
             {
                 isFalling = false;
-                fallTimer = 0;
             }
             Debug.Log("Falling!");
         }
@@ -349,7 +356,7 @@ public class PlayerMovement : MonoBehaviour
         if (isDiving)
         {
             //Make it more forgiving if a player wants to try to graze a cliff
-            if(Physics.SphereCast(transform.position,characterController.radius,Vector3.down,out RaycastHit hit ,Mathf.Abs(movement.y) * Time.deltaTime+0.5f, 1<<LayerMask.NameToLayer("Default")))
+            if(Physics.SphereCast(transform.position,characterController.radius,Vector3.down,out RaycastHit hit ,Mathf.Abs(movement.y) * Time.deltaTime+2f, 1<<LayerMask.NameToLayer("Default")))
             {
                 Vector3 skimDirection = movement.ProjectOntoPlane(hit.normal);
                 skimDirection = skimDirection.normalized; 
