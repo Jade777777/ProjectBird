@@ -40,6 +40,18 @@ public class PlayerMovement : MonoBehaviour
     private Quaternion cameraTargetRotation = Quaternion.identity;
 
 
+    [Header("Grounded")]
+    [SerializeField]
+    private float groundSpeed = 5f;
+    [SerializeField]
+    private float groundGravity = -10f;
+    [SerializeField]
+    private float takeoffSpeed = 5f;
+    [SerializeField]
+    private float groundedCheckTraceLength = 2f;
+    [SerializeField]
+    private LayerMask groundedCheckLayerMask;
+
     [Header("Flight")]
     [SerializeField]
     private float maxFlySpeed = 5f;
@@ -86,6 +98,9 @@ public class PlayerMovement : MonoBehaviour
     //Get bird animator
     Animator birdAnimator;
 
+
+    private Color debugGroundedColor = Color.blue;
+
     private void Awake()
     {
         customInput = new CustomInput();
@@ -97,13 +112,11 @@ public class PlayerMovement : MonoBehaviour
     private void OnEnable()
     {
         customInput.Enable();
-        //customInput.Gameplay.CameraRevolve.performed += OnCameraRevolve;
     }
 
     private void OnDisable()
     {
         customInput.Disable();
-       // customInput.Gameplay.CameraRevolve.performed -= OnCameraRevolve;
 
     }
 
@@ -113,23 +126,78 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Update()
     {
+        CheckIfGrounded();
+
+        HandleCamera();
         switch (playerMovementState)
         {
             case PlayerMovementState.Grounded:
             {
+                HandleGroundMovement();
                 break;
             }
             case PlayerMovementState.Flying :
             {
                 HandleRhythm();
                 HandleRotation();
-                HandleCamera();
                 Movement();
                 break;
             }
         }
     }
    
+    // Raycasting down to check if hitting ground
+    private void CheckIfGrounded()
+    {
+        Ray ray = new Ray(transform.position, Vector3.down);
+        bool hit = Physics.Raycast(ray, groundedCheckTraceLength);
+        //Debug.DrawLine(ray.origin, ray.origin + ray.direction * groundedCheckTraceLength, Color.red, groundedCheckLayerMask.value);
+        if (hit)
+        {
+            debugGroundedColor = Color.magenta;
+            playerMovementState = PlayerMovementState.Grounded;
+        }
+        else 
+        {
+            debugGroundedColor = Color.blue;
+            playerMovementState = PlayerMovementState.Flying;
+
+        }
+    }
+
+    // Handles bird movement while in grounded state.
+    private void HandleGroundMovement()
+    {
+        // adding gravity
+        float gravSpeed = 0;
+        if(!characterController.isGrounded)
+        {
+            gravSpeed = groundGravity * Time.deltaTime;
+        }
+
+
+        // player lateral input
+        Vector3 moveVector = new Vector3(0, gravSpeed, 0);
+        Vector2 val = customInput.Grounded.Movement.ReadValue<Vector2>();
+
+        if(customInput.Grounded.Movement.IsPressed())
+        {
+            moveVector += transform.forward * val.y * groundSpeed;
+            moveVector += transform.right * val.x * groundSpeed;
+        }
+
+        // Adding take-of velocity
+        if(customInput.Grounded.TakeOff.IsPressed())
+        {
+            moveVector.y += takeoffSpeed;
+        }
+
+        moveVector *= Time.deltaTime;
+
+
+        characterController.Move(moveVector);
+    }
+
     // Handles rotating the player.
     private void HandleRotation()
     {
@@ -240,8 +308,8 @@ public class PlayerMovement : MonoBehaviour
 
         //val.Normalize();
 
-        cameraTargetRotation =  Quaternion.AngleAxis(mouseDelta.x * camRotSpeed * Time.deltaTime, Vector3.up) * 
-                                Quaternion.AngleAxis(mouseDelta.y * camRotSpeed * Time.deltaTime, Vector3.right);
+        cameraTargetRotation =  Quaternion.AngleAxis(-mouseDelta.x * camRotSpeed * Time.deltaTime, Vector3.up) * 
+                                Quaternion.AngleAxis(-mouseDelta.y * camRotSpeed * Time.deltaTime, Vector3.right);
 
         // Camera Rotation
         cameraTarget.transform.rotation = cameraTargetRotation * cameraTarget.transform.rotation;
@@ -294,5 +362,11 @@ public class PlayerMovement : MonoBehaviour
         characterController.Move(movement*Time.deltaTime);
 
 
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = debugGroundedColor;
+        Gizmos.DrawSphere(transform.position + 2.5f * Vector3.up, 0.5f);
     }
 }
