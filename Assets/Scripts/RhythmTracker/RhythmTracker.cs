@@ -26,6 +26,8 @@ public class RhythmTracker : MonoBehaviour
     int maxStreak = 10;
     [SerializeField, Tooltip("The rate at which the streak decays when not flapping at a rate of Streaks/Second")]
     float streakDecay = 0.2f;
+    [SerializeField, Tooltip("Increased rate of streak decay when condition is met")]
+    float decayMultiplier = 4f;
 
     [Header("Debug Info")]
     [SerializeField, Tooltip("The current streak, this should be zero when the game is not running")]
@@ -61,6 +63,8 @@ public class RhythmTracker : MonoBehaviour
     /// </summary>
     public bool IsSuccess { get; private set; }
 
+    private float currentDecayMultiplier;
+
     private CustomInput customInput = null;
 
     Animator birdAnimator;
@@ -88,7 +92,7 @@ public class RhythmTracker : MonoBehaviour
         if (currentStreak > 0)
         {
             if (!ProtectStreak) 
-                currentStreak -= streakDecay * Time.deltaTime;
+                currentStreak -= streakDecay*currentDecayMultiplier * Time.deltaTime;
         }
         else
         {
@@ -149,6 +153,17 @@ public class RhythmTracker : MonoBehaviour
     public void ResetStreak()
     {
         currentStreak = 0;
+    }
+    public void IncreasedDecay(bool val)
+    {
+        if (val)
+        {
+            currentDecayMultiplier = decayMultiplier;
+        }
+        else
+        {
+            currentDecayMultiplier = 1;
+        }
     }
 
 
