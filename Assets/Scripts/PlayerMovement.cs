@@ -134,6 +134,7 @@ public class PlayerMovement : MonoBehaviour
             case PlayerMovementState.Grounded:
             {
                 HandleGroundMovement();
+                    birdAnimator.SetTrigger("GroundIdle");
                 break;
             }
             case PlayerMovementState.Flying :
@@ -184,6 +185,9 @@ public class PlayerMovement : MonoBehaviour
         {
             moveVector += transform.forward * val.y * groundSpeed;
             moveVector += transform.right * val.x * groundSpeed;
+
+            birdAnimator.SetTrigger("Walk");
+            //Debug.Log("walking");
         }
 
         // Adding take-of velocity
@@ -266,16 +270,19 @@ public class PlayerMovement : MonoBehaviour
                 currentYSpeed = Mathf.Clamp(currentYSpeed, -100, glideYVelocity);
                 rhythmTracker.ProtectStreak = true;
                 isDiving = true;
+                birdAnimator.SetBool("Dive",true);
                 
             }
             else if (rhythmTracker.IsFlapping)
             {
                 currentYSpeed = maxRiseSpeed * rhythmTracker.Accuracy;
                 currentYSpeed = Mathf.Clamp(currentYSpeed, -glideYVelocity, maxRiseSpeed);
+                birdAnimator.SetBool("Dive", false);
             }
             else
             {
                 currentYSpeed = Mathf.Clamp(currentYSpeed, -100, glideYVelocity);
+                birdAnimator.SetBool("Dive", false);
             }
             currentFlySpeed = Mathf.Lerp(minFlySpeed, maxFlySpeed, rhythmTracker.Accuracy);
             currentFlySpeed = Mathf.Clamp(currentFlySpeed, 0, maxFlySpeed);
