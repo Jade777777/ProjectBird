@@ -322,7 +322,7 @@ public class PlayerMovement : MonoBehaviour
 
         //val.Normalize();
 
-        cameraTargetRotation =  Quaternion.AngleAxis(-mouseDelta.x * camRotSpeed * Time.deltaTime, Vector3.up) * 
+        cameraTargetRotation =  Quaternion.AngleAxis(mouseDelta.x * camRotSpeed * Time.deltaTime, Vector3.up) * 
                                 Quaternion.AngleAxis(-mouseDelta.y * camRotSpeed * Time.deltaTime, Vector3.right);
 
         // Camera Rotation
