@@ -5402,6 +5402,21 @@ PrefabInstance:
       propertyPath: mouseDeltaDeadZone
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7923861694260354297, guid: 5c09dfa4c16028146b8b6682345677de,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7923861694260354297, guid: 5c09dfa4c16028146b8b6682345677de,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7923861694260354297, guid: 5c09dfa4c16028146b8b6682345677de,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8681528195744096958, guid: 5c09dfa4c16028146b8b6682345677de,
         type: 3}
       propertyPath: m_RootOrder
