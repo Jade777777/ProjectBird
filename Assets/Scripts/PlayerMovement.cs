@@ -156,7 +156,7 @@ public class PlayerMovement : MonoBehaviour
     // Raycasting down to check if hitting ground
     private void CheckIfGrounded()
     {
-        Ray ray = new Ray(transform.position, Vector3.down);
+        Ray ray = new Ray(transform.position+Vector3.up*0.5f, Vector3.down);
         bool hit = Physics.Raycast(ray, groundedCheckTraceLength);
         //Debug.DrawLine(ray.origin, ray.origin + ray.direction * groundedCheckTraceLength, Color.red, groundedCheckLayerMask.value);
         if (hit)
