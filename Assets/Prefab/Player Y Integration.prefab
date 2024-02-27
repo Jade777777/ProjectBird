@@ -525,12 +525,12 @@ MonoBehaviour:
   maxCameraXRot: 45
   mouseDeltaDeadZone: 1
   groundSpeed: 5
-  groundGravity: -10
-  takeoffSpeed: 5
-  groundedCheckTraceLength: 2
+  groundGravity: -200
+  takeoffSpeed: 20
+  groundedCheckTraceLength: 0.8
   groundedCheckLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1
   maxFlySpeed: 15
   minFlySpeed: 4
   glideYVelocity: -3
