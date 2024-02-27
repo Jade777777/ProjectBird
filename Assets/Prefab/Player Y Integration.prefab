@@ -1999,11 +1999,6 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
-    - target: {fileID: 5157619199638765661, guid: 29baeec7c9a13204fb7eb5d806a09597,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6656440165698128974, guid: 29baeec7c9a13204fb7eb5d806a09597,
         type: 3}
       propertyPath: m_RootOrder
