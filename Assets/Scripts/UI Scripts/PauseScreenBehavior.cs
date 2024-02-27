@@ -25,6 +25,7 @@ public class PauseScreenBehavior : MonoBehaviour
     public void PauseGame()
     {
         isPaused = !isPaused;
+        Cursor.visible = isPaused;
         if (isPaused)
         {
             //Toggle pause UI on and game UI off

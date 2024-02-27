@@ -66,6 +66,7 @@ public class OnboardingBehavior : MonoBehaviour
             //Close the window and unpause the game
             case 4:
                 onboardingPanel.SetActive(false);
+                Cursor.visible = false;
                 Time.timeScale = 1.0f;
                 break;
         }
