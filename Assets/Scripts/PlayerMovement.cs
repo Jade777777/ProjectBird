@@ -79,6 +79,7 @@ public class PlayerMovement : MonoBehaviour
     private float currentFlySpeed = 0;
     private bool isDiving = false;
     private bool isFalling = false;
+    private bool isFlying = false;
     private float fallTimer = 0;
     private Vector3 hitNormal;
     
@@ -162,12 +163,12 @@ public class PlayerMovement : MonoBehaviour
         if (hit)
         {
             debugGroundedColor = Color.magenta;
-            playerMovementState = PlayerMovementState.Grounded;
+            //playerMovementState = PlayerMovementState.Grounded;
         }
         else 
         {
             debugGroundedColor = Color.blue;
-            playerMovementState = PlayerMovementState.Flying;
+            //playerMovementState = PlayerMovementState.Flying;
 
         }
     }
@@ -199,7 +200,7 @@ public class PlayerMovement : MonoBehaviour
         // Adding take-of velocity
         if(customInput.Grounded.TakeOff.IsPressed())
         {
-            moveVector.y += takeoffSpeed;
+            playerMovementState = PlayerMovementState.Flying;
         }
 
         moveVector *= Time.deltaTime;
@@ -278,26 +279,31 @@ public class PlayerMovement : MonoBehaviour
                 rhythmTracker.ProtectStreak = true;
                 isDiving = true;
                 birdAnimator.SetBool("Dive",true);
-                
+
             }
             else if (rhythmTracker.IsFlapping)
             {
-                currentYSpeed = maxRiseSpeed * rhythmTracker.Accuracy;
+                Debug.Log("flapping");
+                currentYSpeed = maxRiseSpeed; 
                 currentYSpeed = Mathf.Clamp(currentYSpeed, -glideYVelocity, maxRiseSpeed);
                 birdAnimator.SetBool("Dive", false);
+            
             }
             else
             {
-                currentYSpeed = Mathf.Clamp(currentYSpeed, -100, glideYVelocity);
+                currentYSpeed = 0;
                 birdAnimator.SetBool("Dive", false);
+            
             }
-            currentFlySpeed = Mathf.Lerp(minFlySpeed, maxFlySpeed, rhythmTracker.Accuracy);
-            currentFlySpeed = Mathf.Clamp(currentFlySpeed, 0, maxFlySpeed);
+            currentFlySpeed = maxFlySpeed;
+            //currentFlySpeed = Mathf.Lerp(minFlySpeed, maxFlySpeed, rhythmTracker.Accuracy);
+            //currentFlySpeed = Mathf.Clamp(currentFlySpeed, 0, maxFlySpeed);
         }
 
         if (GetComponent<CharacterController>().isGrounded)
         {
             currentFlySpeed = 0;
+            playerMovementState = PlayerMovementState.Grounded;
             Debug.Log("Grounded!");
         }
 

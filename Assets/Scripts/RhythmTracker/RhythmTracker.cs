@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,11 +10,11 @@ using static UnityEngine.Rendering.DebugUI;
 public class RhythmTracker : MonoBehaviour
 {
     [Header("Target Range")]
-    [SerializeField, Range(0, 1)]
-    float targetMin=0.7f;
+
     [SerializeField, Range(0, 1)]
     float targetMax=0.95f;
-
+    [SerializeField, Range(0, 1)]
+    float targetSize = 0.7f;
 
     [Header("Speed in Flaps/Second")]
     [SerializeField, Tooltip("The rate of flaping when at a minumum streak")]
@@ -52,12 +54,20 @@ public class RhythmTracker : MonoBehaviour
     /// <summary>
     /// Is the current position within range to increase the streak.
     /// </summary>
-    public bool IsTarget { get { return CurrentPosition > targetMin && CurrentPosition < targetMax; } }
+    public bool IsTarget { get { return CurrentPosition > targetMax-targetSize && CurrentPosition < targetMax; } }
     public bool IsOverTarget { get { return CurrentPosition > targetMax; } }
     /// <summary>
     /// Is the player currently flapping the wings downward.
     /// </summary>
     public bool IsFlapping { get; private set; }
+
+
+    public bool isCharging { get; private set; }
+    public Action Flap;
+    float lastFlap = 0;
+    float cooldown = 1;
+    float ChargeSpeed = 1;
+
     /// <summary>
     /// Was the last flap successful.
     /// </summary>
@@ -71,6 +81,7 @@ public class RhythmTracker : MonoBehaviour
 
     private void Awake()
     {
+        Flap += () => Debug.Log("Flap");
         customInput = new CustomInput();
         birdAnimator = gameObject.GetComponentInChildren<Animator>();
     }
@@ -89,29 +100,35 @@ public class RhythmTracker : MonoBehaviour
 
     private void Update()
     {
-        if (currentStreak > 0)
+        if (Time.time< lastFlap + cooldown)
         {
-            if (!ProtectStreak) 
-                currentStreak -= streakDecay*currentDecayMultiplier * Time.deltaTime;
+            Debug.Log("Cooldown");
+            return;
         }
         else
         {
-            currentStreak = 0;
+            IsFlapping = false;
         }
-        if(IsFlapping)
+        if (isCharging)
         {
-            CurrentPosition -= CurrentVelocity * Time.deltaTime;
+           
+            CurrentPosition += Time.deltaTime * ChargeSpeed;
+
+            Debug.Log("Charging");
+            if (CurrentPosition < targetMax && CurrentPosition > targetMax - targetSize)
+            {
+                Debug.Log("InRange");
+
+
+            }
+
         }
-        else
-        {
-            CurrentPosition += CurrentVelocity * Time.deltaTime;
-        }
-        
+
         //Clamping manualy because IsFlapping needs to be set
         if (CurrentPosition < 0)
         {
+            
             CurrentPosition = 0;
-            IsFlapping = false;
         }
 
         if(CurrentPosition > 1)
@@ -127,42 +144,42 @@ public class RhythmTracker : MonoBehaviour
     /// <param name="value"></param>
     public void OnFlap(InputAction.CallbackContext value)
     {
-        if (!IsFlapping)// only valid input is on upswing
+        if (customInput.Gameplay.Flap.IsPressed())
         {
-            if (IsTarget)
-            {
-                currentStreak++;
-                IsSuccess = true;
-            }
-            else if (IsOverTarget)
-            {
-                IsSuccess = false;
-            }
-            else
-            {
-                currentStreak--;
-                IsSuccess = false;
-            }
-            currentStreak = Mathf.Clamp(currentStreak, 0, maxStreak);
-            IsFlapping = true;
-
-            birdAnimator.SetTrigger("Flap");
+            isCharging = true;
         }
+        else
+        {
 
+            isCharging = false;
+            if (CurrentPosition < targetMax && CurrentPosition > targetMax - targetSize)
+            {
+                lastFlap = Time.time;
+                IsFlapping = true;
+                birdAnimator.SetTrigger("Flap");
+                Flap.Invoke();
+                
+            }
+
+                CurrentPosition = 0;
+
+        }
     }
+
+
     public void ResetStreak()
     {
-        currentStreak = 0;
+        //currentStreak = 0;
     }
     public void IncreasedDecay(bool val)
     {
         if (val)
         {
-            currentDecayMultiplier = decayMultiplier;
+            //currentDecayMultiplier = decayMultiplier;
         }
         else
         {
-            currentDecayMultiplier = 1;
+            //currentDecayMultiplier = 1;
         }
     }
 
