@@ -1,4 +1,5 @@
 using Cinemachine.Utility;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -139,6 +140,7 @@ public class PlayerMovement : MonoBehaviour
                 isFalling = false;
                 rhythmTracker.IncreasedDecay(true);
                 HandleGroundMovement();
+                TurnToFaceVelocity();
                     birdAnimator.SetTrigger("GroundIdle");
                 break;
             }
@@ -153,7 +155,8 @@ public class PlayerMovement : MonoBehaviour
         }
         fallTimer += Time.deltaTime;
     }
-   
+
+
     // Raycasting down to check if hitting ground
     private void CheckIfGrounded()
     {
@@ -190,11 +193,13 @@ public class PlayerMovement : MonoBehaviour
 
         if(customInput.Grounded.Movement.IsPressed())
         {
-            moveVector += transform.forward * val.y * groundSpeed;
-            moveVector += transform.right * val.x * groundSpeed;
+            moveVector += cameraTarget.transform.forward * val.y * groundSpeed;
+            moveVector += cameraTarget.transform.right * val.x * groundSpeed;
+
+            //Vector3 moveDirXZ= new Vector3(moveVector.x, 0, moveVector.z);
+            //transform.rotation = Quaternion.LookRotation(moveDirXZ, Vector3.up);
 
             birdAnimator.SetTrigger("Walk");
-            //Debug.Log("walking");
         }
 
         // Adding take-of velocity
@@ -208,6 +213,13 @@ public class PlayerMovement : MonoBehaviour
 
         characterController.Move(moveVector);
     }
+    private void TurnToFaceVelocity()
+    {
+        Vector3 moveDirXZ = new Vector3(characterController.velocity.x, 0, characterController.velocity.z);
+        if (moveDirXZ == Vector3.zero) return;
+
+        birdPrefab.transform.rotation = Quaternion.LookRotation(moveDirXZ, Vector3.up);
+    }
 
     // Handles rotating the player.
     private void HandleRotation()
@@ -216,7 +228,6 @@ public class PlayerMovement : MonoBehaviour
 
         float val = Mathf.Sign(customInput.Gameplay.Turning.ReadValue<float>());
         //Debug.Log(val);
-
         if(customInput.Gameplay.Turning.IsPressed())
         {
             birdAnimator.SetFloat("flyingDirectionX", val);
@@ -357,7 +368,7 @@ public class PlayerMovement : MonoBehaviour
         Vector3 movement;
         if (!isFalling)
         {
-            movement = transform.forward * currentFlySpeed;
+            movement = birdPrefab.transform.forward * currentFlySpeed;
             
         }
         else
