@@ -14,10 +14,13 @@ public class PlayerCollecting : MonoBehaviour
     GameObject nut3;
 
 
-    //If the player is in interaction range
-    bool bInRange = false;
+    //If the player is in interaction range of collecting nuts
+    bool bInNutRange = false;
+    //If the player is in interaction range of feeding birds
+    bool bInFeedRange = false;
 
     CapsuleCollider targetTreeCollider;
+    CapsuleCollider targetSmallBirdCollider;
 
     //The nuts the player has
     int nutsInHand = 0;
@@ -42,34 +45,60 @@ public class PlayerCollecting : MonoBehaviour
 
     private void Update()
     {
-        if (bInRange && Input.GetKeyDown(KeyCode.E))
+        //Collect nuts
+        if (bInNutRange && Input.GetKeyDown(KeyCode.E))
         {
             //Add nuts
             if(nutsInHand < maxNutsInHand)
             {
                 nutsInHand += 1;
                 UpdateNutBoard();
+
+                //Reset variables
+                targetTreeCollider.enabled = false;
+                interactionCanvas.enabled = false;
+                targetTreeCollider = null;
+                bInNutRange = false;
+            }
+        }
+        //Feed bird
+        else if (bInFeedRange && Input.GetKeyDown(KeyCode.E))
+        {
+            if (nutsInHand >= 1)
+            {
+                nutsInHand -= 1;
+                UpdateNutBoard();
+                Animator birdAnimator = targetSmallBirdCollider.GetComponent<Animator>();
+                birdAnimator.SetTrigger("Eat");
+
+                //Reset variables
+                targetTreeCollider.enabled = false;
+                interactionCanvas.enabled = false;
+                targetTreeCollider = null;
+                bInNutRange = false;
             }
 
-            Debug.Log(nutsInHand);
-
-            //Reset variables
-            targetTreeCollider.enabled = false;
-            interactionCanvas.enabled = false;
-            targetTreeCollider = null;
-            bInRange = false;
         }
     }
 
 
     private void OnTriggerEnter(Collider other)
     {
+        //Collect Nuts
         if(other.tag == "Collectable")
         {
-            bInRange = true;
+            bInNutRange = true;
             interactionCanvas.enabled = true;
 
             targetTreeCollider = other.GetComponent<CapsuleCollider>();
+        }
+        //
+        else if(other.tag == "SmallBird")
+        {
+            bInFeedRange = true;
+            interactionCanvas.enabled = true;
+
+            targetSmallBirdCollider = other.GetComponent<CapsuleCollider>();
         }
 
     }
@@ -78,13 +107,22 @@ public class PlayerCollecting : MonoBehaviour
     {
         if (other.tag == "Collectable")
         {
-            bInRange = false;
+            bInNutRange = false;
             interactionCanvas.enabled = false;
 
             targetTreeCollider = null;
         }
+
+        else if (other.tag == "SmallBird")
+        {
+            bInFeedRange = false;
+            interactionCanvas.enabled = false;
+
+            targetSmallBirdCollider = null;
+        }
     }
 
+    //Used to update the nut count board
     private void UpdateNutBoard()
     {
         switch(nutsInHand)
