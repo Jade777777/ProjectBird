@@ -72,10 +72,8 @@ public class PlayerCollecting : MonoBehaviour
                 birdAnimator.SetTrigger("Eat");
 
                 //Reset variables
-                targetTreeCollider.enabled = false;
-                interactionCanvas.enabled = false;
-                targetTreeCollider = null;
-                bInNutRange = false;
+                //interactionCanvas.enabled = false;
+                //bInFeedRange = false;
             }
 
         }
