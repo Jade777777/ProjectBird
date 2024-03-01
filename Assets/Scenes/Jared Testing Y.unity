@@ -4721,6 +4721,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player Y Integration
       objectReference: {fileID: 0}
+    - target: {fileID: 5949017077880248290, guid: 5c09dfa4c16028146b8b6682345677de,
+        type: 3}
+      propertyPath: chargeSpeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5949017077880248290, guid: 5c09dfa4c16028146b8b6682345677de,
+        type: 3}
+      propertyPath: streakDecay
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7271984723678944116, guid: 5c09dfa4c16028146b8b6682345677de,
+        type: 3}
+      propertyPath: maxFlySpeed
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 8681528195744096958, guid: 5c09dfa4c16028146b8b6682345677de,
         type: 3}
       propertyPath: m_RootOrder

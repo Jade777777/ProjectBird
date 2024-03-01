@@ -11,7 +11,8 @@ public class PlayerMovement : MonoBehaviour
     public enum PlayerMovementState
     {
         Flying,
-        Grounded
+        Grounded,
+
     };
 
     [HideInInspector]
@@ -79,9 +80,6 @@ public class PlayerMovement : MonoBehaviour
     private float currentYSpeed = 0;
     private float currentFlySpeed = 0;
     private bool isDiving = false;
-    private bool isFalling = false;
-    private bool isFlying = false;
-    private float fallTimer = 0;
     private Vector3 hitNormal;
     
 
@@ -103,12 +101,15 @@ public class PlayerMovement : MonoBehaviour
 
     private Color debugGroundedColor = Color.blue;
 
+    private bool isFalling { get => rhythmTracker.Accuracy == 0; }
+
     private void Awake()
     {
         customInput = new CustomInput();
         characterController = GetComponent<CharacterController>();
         birdAnimator = birdPrefab.GetComponent<Animator>();
         rhythmTracker = GetComponent<RhythmTracker>();
+        rhythmTracker.Flap += ()=> playerMovementState = PlayerMovementState.Flying;
     }
 
     private void OnEnable()
@@ -128,8 +129,6 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Update()
     {
-        rhythmTracker.ProtectStreak = false;//only true when diving
-
         CheckIfGrounded();
 
         HandleCamera();
@@ -137,23 +136,20 @@ public class PlayerMovement : MonoBehaviour
         {
             case PlayerMovementState.Grounded:
             {
-                isFalling = false;
-                rhythmTracker.IncreasedDecay(true);
+
                 HandleGroundMovement();
                 TurnToFaceVelocity();
-                    birdAnimator.SetTrigger("GroundIdle");
+                birdAnimator.SetTrigger("GroundIdle");
                 break;
             }
             case PlayerMovementState.Flying :
             {
-                rhythmTracker.IncreasedDecay(false);
                 HandleRhythm();
                 HandleRotation();
                 Movement();
                 break;
             }
         }
-        fallTimer += Time.deltaTime;
     }
 
 
@@ -202,11 +198,7 @@ public class PlayerMovement : MonoBehaviour
             birdAnimator.SetTrigger("Walk");
         }
 
-        // Adding take-of velocity
-        if(customInput.Grounded.TakeOff.IsPressed())
-        {
-            playerMovementState = PlayerMovementState.Flying;
-        }
+
 
         moveVector *= Time.deltaTime;
 
@@ -249,10 +241,8 @@ public class PlayerMovement : MonoBehaviour
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         hitNormal = hit.normal;
-        if (Vector3.Angle(hit.normal, Vector3.up) > groundAngle && !isFalling)
+        if (Vector3.Angle(hit.normal, Vector3.up) > groundAngle)
         {
-            isFalling = true;
-            fallTimer = 0;
             rhythmTracker.ResetStreak();
             Debug.Log("Hit Something!");
         }
@@ -260,37 +250,22 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleRhythm()
     {
-        
         isDiving = false;
         
         if (isFalling)
         {
-            if (rhythmTracker.IsFlapping&& rhythmTracker.IsSuccess)//only stop falling if building a streak
-            {
-                currentYSpeed = 0;
-            }
-            else
-            {
-                currentYSpeed += gravity * Time.deltaTime;
-                currentYSpeed = Mathf.Clamp(currentYSpeed, -100, glideYVelocity);
-            }
-            
-            if (fallTimer > fallTime)
-            {
-                isFalling = false;
-            }
-            Debug.Log("Falling!");
+            currentYSpeed += gravity * Time.deltaTime;
+            currentYSpeed = Mathf.Clamp(currentYSpeed, -100, glideYVelocity);
         }
         else
         {
+            currentFlySpeed = Mathf.Lerp(minFlySpeed, maxFlySpeed, rhythmTracker.Accuracy);
             if (customInput.Gameplay.Dive.IsPressed())
             {
                 currentYSpeed += diveAcceleration * Time.deltaTime;
-                currentYSpeed = Mathf.Clamp(currentYSpeed, -100, glideYVelocity);
-                rhythmTracker.ProtectStreak = true;
+                currentYSpeed = Mathf.Clamp(currentYSpeed, -100, -5);
                 isDiving = true;
                 birdAnimator.SetBool("Dive",true);
-
             }
             else if (rhythmTracker.IsFlapping)
             {
@@ -304,16 +279,14 @@ public class PlayerMovement : MonoBehaviour
             {
                 currentYSpeed = 0;
                 birdAnimator.SetBool("Dive", false);
-            
             }
-            currentFlySpeed = maxFlySpeed;
-            //currentFlySpeed = Mathf.Lerp(minFlySpeed, maxFlySpeed, rhythmTracker.Accuracy);
-            //currentFlySpeed = Mathf.Clamp(currentFlySpeed, 0, maxFlySpeed);
+
         }
 
-        if (GetComponent<CharacterController>().isGrounded)
+        if (GetComponent<CharacterController>().isGrounded&& !rhythmTracker.IsFlapping)
         {
             currentFlySpeed = 0;
+            rhythmTracker.ResetStreak();
             playerMovementState = PlayerMovementState.Grounded;
             Debug.Log("Grounded!");
         }
@@ -366,15 +339,16 @@ public class PlayerMovement : MonoBehaviour
     private void Movement()
     {
         Vector3 movement;
-        if (!isFalling)
+        if (isFalling)
         {
-            movement = birdPrefab.transform.forward * currentFlySpeed;
-            
+            //falling
+            movement = hitNormal * currentFlySpeed;  
         }
         else
         {
-            movement = hitNormal * currentFlySpeed;
-            
+            //normal movement
+            movement = birdPrefab.transform.forward * currentFlySpeed;
+
         }
         movement.y = currentYSpeed;
         if (isDiving)
