@@ -31,7 +31,6 @@ namespace Utilities.Screenshot
             ScreenshotData = new List<Tuple<DateTime, Sprite>>();
         }
 
-        [ContextMenu("Read")]
         private void ReadData()
         {
             StartCoroutine(ReadDataAsync());
@@ -70,19 +69,19 @@ namespace Utilities.Screenshot
                 _pressed = true;
 
                 // Take the screenshot & save the screenshot.
-                TakeScreenshot(true);
+                TakeScreenshot();
             }
 
             if (Input.GetKeyUp(KeyCode.X))
                 _pressed = false;
         }
 
-        public void TakeScreenshot(bool save = false)
+        public void TakeScreenshot()
         {
-            StartCoroutine(TakeScreenshotAsync(save));
+            StartCoroutine(TakeScreenshotAsync());
         }
 
-        private IEnumerator TakeScreenshotAsync(bool save = false)
+        private IEnumerator TakeScreenshotAsync()
         {
             yield return new WaitForEndOfFrame();
 
