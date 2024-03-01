@@ -531,7 +531,7 @@ MonoBehaviour:
   groundedCheckLayerMask:
     serializedVersion: 2
     m_Bits: 1
-  maxFlySpeed: 15
+  maxFlySpeed: 30
   minFlySpeed: 4
   glideYVelocity: -3
   diveAcceleration: -30
@@ -553,15 +553,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb97476569e877348b134a313b4f240b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetMin: 0.6
   targetMax: 0.95
-  maxVelocity: 6
-  minVelocity: 2
+  targetMaxSize: 0.25
+  targetMinSize: 0.25
+  chargeSpeed: 1
   maxStreak: 6
-  streakDecay: 0.2
-  decayMultiplier: 10
+  streakDecay: 0
   currentStreak: 0
-  ProtectStreak: 0
 --- !u!143 &6300999273524430928
 CharacterController:
   m_ObjectHideFlags: 0
