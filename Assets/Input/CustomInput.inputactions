@@ -25,12 +25,12 @@
                 },
                 {
                     "name": "Flap",
-                    "type": "Button",
+                    "type": "PassThrough",
                     "id": "962bfb05-60c6-4490-94e5-5e1c34c945e8",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Dive",
