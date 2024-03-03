@@ -600,6 +600,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16fd2d2047072b0479395bea61033d25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  FollowerPrefab: {fileID: 4144077086708810144, guid: bc5bdbe8594fc1242855e0ae8f2ea692,
+    type: 3}
 --- !u!65 &28832653824052035
 BoxCollider:
   m_ObjectHideFlags: 0

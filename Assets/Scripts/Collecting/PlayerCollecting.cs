@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class PlayerCollecting : MonoBehaviour
 {
+    [SerializeField]
+    GameObject FollowerPrefab;
     /*
      * UI related
      */
@@ -74,6 +76,8 @@ public class PlayerCollecting : MonoBehaviour
                 //Reset variables
                 //interactionCanvas.enabled = false;
                 //bInFeedRange = false;
+                Instantiate(FollowerPrefab, targetSmallBirdCollider.transform.position, Quaternion.identity);
+                Destroy(targetSmallBirdCollider.gameObject);
             }
 
         }
