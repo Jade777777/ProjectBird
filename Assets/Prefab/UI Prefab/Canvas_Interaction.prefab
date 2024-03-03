@@ -33,7 +33,7 @@ RectTransform:
   m_Children:
   - {fileID: 2585501241285881633}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -115,6 +115,13 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: InteractionInstruction
+      objectReference: {fileID: 0}
+    - target: {fileID: 4405570029123808120, guid: 61b0c8f459941ea4d899f1d09a008534,
+        type: 3}
+      propertyPath: m_text
+      value: 'Press E to interact
+
+'
       objectReference: {fileID: 0}
     - target: {fileID: 7502054773533824956, guid: 61b0c8f459941ea4d899f1d09a008534,
         type: 3}

@@ -2120,13 +2120,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8565448631260599269, guid: 4c5ed446470dfd94aa0e0ae9e2304b80,
-        type: 3}
-      propertyPath: m_text
-      value: 'Press E to interact
-
-'
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
