@@ -94,7 +94,7 @@ public class OnboardingBehavior : MonoBehaviour
             case 8:
                 onboardingPanel.GetComponent<RectTransform>().localPosition = new Vector3(-24, -341, 0);
                 text.text = "The controls for flying are listed here. \n<--";
-                controlsText.text = "Hold Spacebar: Flap Wings\r\n-A and D: Turn\r\n-W or S: Dive\r\n-Left Click + Move Mouse: Look Around";
+                controlsText.text = "Hold Spacebar: Flap Wings\r\n-A and D: Turn\r\n-W or S: Dive\r\n-Left Click + Move Mouse: Look Around\r\n-X: Take Screenshot\r\n-H: Toggle HUD";
                 onboardingState++;
                 break;
             case 9:

@@ -19,6 +19,11 @@ public class PauseScreenBehavior : MonoBehaviour
         {
             PauseGame();
         }
+
+        if (Input.GetKeyDown(KeyCode.H) && !onboardingPanel.activeInHierarchy && !isPaused)
+        {
+            ToggleHUD();
+        }
     }
 
     //Toggles the game being paused
@@ -32,6 +37,8 @@ public class PauseScreenBehavior : MonoBehaviour
             pauseScreen.gameObject.SetActive(true);
             gameUI.gameObject.SetActive(false);
             Time.timeScale = 0.0f;
+
+            Cursor.lockState = CursorLockMode.None;
         }
 
         else
@@ -40,6 +47,8 @@ public class PauseScreenBehavior : MonoBehaviour
             pauseScreen.gameObject.SetActive(false);
             gameUI.gameObject.SetActive(true);
             Time.timeScale = 1.0f;
+
+            Cursor.lockState = CursorLockMode.Confined;
         }
     }
 
@@ -47,6 +56,11 @@ public class PauseScreenBehavior : MonoBehaviour
     public void BackToMainMenu()
     {
         SceneManager.LoadScene("TitleScreen");
+    }
+
+    public void ToggleHUD()
+    {
+        gameUI.SetActive(!gameUI.activeInHierarchy);
     }
 }
 

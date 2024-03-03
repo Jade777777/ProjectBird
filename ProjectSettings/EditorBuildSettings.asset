@@ -9,6 +9,6 @@ EditorBuildSettings:
     path: Assets/Scenes/TitleScreen.unity
     guid: 3c95b8fd94f4a2a4b8381013fc2155d8
   - enabled: 1
-    path: Assets/Scenes/TerrainAndBird.unity
-    guid: 8766e1e0f8627aa438f7c52553c7cdef
+    path: Assets/Scenes/PranavOnboardingTest.unity
+    guid: 5671b444c7d098a4c9b376aad2c25fc9
   m_configObjects: {}
