@@ -15,6 +15,9 @@ public class PlayerMovement : MonoBehaviour
 
     };
 
+    public bool canMove = false;
+    public bool canFly = false;
+
     [HideInInspector]
     public PlayerMovementState playerMovementState = PlayerMovementState.Flying;
 
@@ -109,7 +112,7 @@ public class PlayerMovement : MonoBehaviour
         characterController = GetComponent<CharacterController>();
         birdAnimator = birdPrefab.GetComponent<Animator>();
         rhythmTracker = GetComponent<RhythmTracker>();
-        rhythmTracker.Flap += ()=> playerMovementState = PlayerMovementState.Flying;
+        rhythmTracker.Flap += OnFlap;
     }
 
     private void OnEnable()
@@ -127,6 +130,7 @@ public class PlayerMovement : MonoBehaviour
     {
         prevMousePos = Mouse.current.position.ReadValue();
     }
+
     private void Update()
     {
         CheckIfGrounded();
@@ -136,7 +140,7 @@ public class PlayerMovement : MonoBehaviour
         {
             case PlayerMovementState.Grounded:
             {
-
+                if (!canMove) break;
                 HandleGroundMovement();
                 TurnToFaceVelocity();
                 birdAnimator.SetTrigger("GroundIdle");
@@ -152,6 +156,12 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void OnFlap()
+    {
+        if (!canFly) return;
+
+        playerMovementState = PlayerMovementState.Flying;
+    }
 
     // Raycasting down to check if hitting ground
     private void CheckIfGrounded()

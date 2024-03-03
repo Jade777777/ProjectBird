@@ -505,7 +505,7 @@ Transform:
   - {fileID: 1870979077032963169}
   - {fileID: 7923861694260354297}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7271984723678944116
 MonoBehaviour:
@@ -519,10 +519,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d3e0f7f0c748fc46ba75f7ccef93496, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canMove: 0
+  canFly: 0
   playerMovementState: 0
   cameraTarget: {fileID: 7151624746536205965}
   rotSpeed: 50
-  camRotSpeed: 15
+  camRotSpeed: 5
   camRotIncrement: 5
   maxCameraXRot: 45
   mouseDeltaDeadZone: 1
