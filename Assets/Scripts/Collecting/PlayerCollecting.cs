@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerCollecting : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class PlayerCollecting : MonoBehaviour
     /*
      * UI related
      */
-    Canvas interactionCanvas;
+    TextMeshProUGUI interactionText;
     GameObject nut1;
     GameObject nut2;
     GameObject nut3;
@@ -29,20 +30,23 @@ public class PlayerCollecting : MonoBehaviour
     //The max nuts the player can have
     int maxNutsInHand = 3;
 
+    OnboardingBehavior onboarding = null;
     private void Awake()
     {
         //Set up UI
-        interactionCanvas = GameObject.Find("Canvas_Interaction").GetComponent<Canvas>();
+        interactionText = GameObject.Find("InteractionInstruction").GetComponent<TextMeshProUGUI>();
         nut1 = GameObject.Find("Nut1");
         nut2 = GameObject.Find("Nut2");
         nut3 = GameObject.Find("Nut3");
         UpdateNutBoard();
 
         //Hide the instruction for interaction
-        if (interactionCanvas)
+        if (interactionText)
         {
-            interactionCanvas.enabled = false;
+            interactionText.gameObject.SetActive(false);
         }
+
+        onboarding = GameObject.Find("Canvas").GetComponent<OnboardingBehavior>();
     }
 
     private void Update()
@@ -58,9 +62,11 @@ public class PlayerCollecting : MonoBehaviour
 
                 //Reset variables
                 targetTreeCollider.enabled = false;
-                interactionCanvas.enabled = false;
+                interactionText.gameObject.SetActive(false);
                 targetTreeCollider = null;
                 bInNutRange = false;
+
+                onboarding.OnCollection();
             }
         }
         //Feed bird
@@ -72,12 +78,14 @@ public class PlayerCollecting : MonoBehaviour
                 UpdateNutBoard();
                 Animator birdAnimator = targetSmallBirdCollider.GetComponent<Animator>();
                 birdAnimator.SetTrigger("Eat");
-
                 //Reset variables
                 //interactionCanvas.enabled = false;
                 //bInFeedRange = false;
+                interactionText.gameObject.SetActive(false);
                 Instantiate(FollowerPrefab, targetSmallBirdCollider.transform.position, Quaternion.identity);
                 Destroy(targetSmallBirdCollider.gameObject);
+
+                onboarding.OnFeed();
             }
 
         }
@@ -90,15 +98,17 @@ public class PlayerCollecting : MonoBehaviour
         if(other.tag == "Collectable")
         {
             bInNutRange = true;
-            interactionCanvas.enabled = true;
+            interactionText.gameObject.SetActive(true);
+            interactionText.text = "Press E to collect";
 
             targetTreeCollider = other.GetComponent<CapsuleCollider>();
         }
         //
-        else if(other.tag == "SmallBird")
+        else if(other.tag == "SmallBird" && nutsInHand != 0)
         {
             bInFeedRange = true;
-            interactionCanvas.enabled = true;
+            interactionText.gameObject.SetActive(true);
+            interactionText.text = "Press E to feed";
 
             targetSmallBirdCollider = other.GetComponent<CapsuleCollider>();
         }
@@ -110,7 +120,7 @@ public class PlayerCollecting : MonoBehaviour
         if (other.tag == "Collectable")
         {
             bInNutRange = false;
-            interactionCanvas.enabled = false;
+            interactionText.gameObject.SetActive(false);
 
             targetTreeCollider = null;
         }
@@ -118,7 +128,8 @@ public class PlayerCollecting : MonoBehaviour
         else if (other.tag == "SmallBird")
         {
             bInFeedRange = false;
-            interactionCanvas.enabled = false;
+            interactionText.gameObject.SetActive(false);
+
 
             targetSmallBirdCollider = null;
         }

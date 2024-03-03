@@ -8,11 +8,13 @@ public class Follower : MonoBehaviour
     public static List<Follower> FollowerList;
     Transform followTarget;
     float seperationDistance = 4f;
-    float seed; 
+    float seed;
+
+    private bool hasBeenFed = false;
     // Start is called before the first frame update
     void Start()
     {
-        if(FollowerList== null)
+        if (FollowerList == null)
         {
             FollowerList = new List<Follower>();
         }
@@ -21,11 +23,16 @@ public class Follower : MonoBehaviour
         Animator birdAnimator = GetComponentInChildren<Animator>();
         birdAnimator.Play("Fly");
         seed = Random.Range(0f, 10000f);
+        hasBeenFed = true;
     }
+
+
     Vector3 currentVelocity;
     // Update is called once per frame
     void Update()
     {
+        if (!hasBeenFed) { return; }
+
         Vector3 averagePos = new Vector3();
         foreach(Follower l in FollowerList)
         {
