@@ -1,6 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
+using Utilities.Screenshot;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
 //UI Script originally developed by Kevin Insinna
@@ -11,6 +17,13 @@ public class PauseScreenBehavior : MonoBehaviour
     public GameObject pauseScreen;
     public GameObject gameUI;
     public GameObject onboardingPanel;
+
+    public ScreenshotUtil screenshotScript;
+    public GameObject screenshotListContent;
+    public GameObject scrollbar;
+    public GameObject screenshotUI;
+
+    bool screenshotsLoaded = false;
 
     private void Update()
     {
@@ -61,6 +74,44 @@ public class PauseScreenBehavior : MonoBehaviour
     public void ToggleHUD()
     {
         gameUI.SetActive(!gameUI.activeInHierarchy);
+    }
+
+    public void GoToScreenshots()
+    {
+        pauseScreen.SetActive(false);
+        screenshotUI.SetActive(true);
+
+        if (!screenshotsLoaded)
+        {
+            LoadScreenshots();
+        }
+    }
+
+    public void ExitScreenshots()
+    {
+        pauseScreen.SetActive(true);
+        screenshotUI.SetActive(false);
+
+        foreach(Transform child in screenshotListContent.transform)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
+    void LoadScreenshots()
+    {
+        if (screenshotScript.ScreenshotData.Count != 0)
+        {
+            foreach (Tuple<System.DateTime, UnityEngine.Sprite> screenshot in screenshotScript.ScreenshotData)
+            {
+                GameObject screenshotObj = new GameObject();
+                Image NewImage = screenshotObj.AddComponent<Image>(); 
+                screenshotObj.GetComponent<RectTransform>().sizeDelta = new Vector2 (1280, 720);
+                NewImage.sprite = screenshot.Item2; 
+                screenshotObj.GetComponent<RectTransform>().SetParent(screenshotListContent.transform); 
+                screenshotObj.SetActive(true); 
+            }
+        }
     }
 }
 
