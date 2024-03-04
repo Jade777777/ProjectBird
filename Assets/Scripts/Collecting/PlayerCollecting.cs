@@ -1,5 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Core.Managers;
+using Core.Managers.Analytics;
+using Core.Managers.Events;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -31,6 +35,9 @@ public class PlayerCollecting : MonoBehaviour
     int maxNutsInHand = 3;
 
     OnboardingBehavior onboarding = null;
+
+    private int _nutsCollected = 0;
+    private int _chicksFed = 0;
     private void Awake()
     {
         //Set up UI
@@ -47,6 +54,22 @@ public class PlayerCollecting : MonoBehaviour
         }
 
         onboarding = GameObject.Find("Canvas").GetComponent<OnboardingBehavior>();
+    }
+
+    private void OnEnable()
+    {
+        EventManager.AddListener<EndSessionEvent>(OnSessionEnd);
+    }
+    
+    private void OnDisable()
+    {
+        EventManager.RemoveListener<EndSessionEvent>(OnSessionEnd);
+    }
+
+    private void OnSessionEnd(EndSessionEvent @event)
+    {
+        new AnalyticsEvent("Nuts Collected").AddParameter("Number", _nutsCollected.ToString());
+        new AnalyticsEvent("Chicks Fed").AddParameter("Number", _chicksFed.ToString());
     }
 
     private void Update()
@@ -67,6 +90,7 @@ public class PlayerCollecting : MonoBehaviour
                 bInNutRange = false;
 
                 onboarding.OnCollection();
+                _nutsCollected++;
             }
         }
         //Feed bird
@@ -86,6 +110,7 @@ public class PlayerCollecting : MonoBehaviour
                 Destroy(targetSmallBirdCollider.gameObject);
 
                 onboarding.OnFeed();
+                _chicksFed++;
             }
 
         }

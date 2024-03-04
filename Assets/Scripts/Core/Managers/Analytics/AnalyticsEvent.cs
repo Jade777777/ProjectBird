@@ -2,7 +2,7 @@
 
 namespace Core.Managers.Analytics
 {
-    public sealed class AnalyticsEvent : GameEvent
+    public class AnalyticsEvent : GameEvent
     {
         public string Name { get; private set; }
 
