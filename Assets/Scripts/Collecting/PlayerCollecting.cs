@@ -52,6 +52,10 @@ public class PlayerCollecting : MonoBehaviour
         {
             interactionText.gameObject.SetActive(false);
         }
+        else
+        {
+            Debug.Log("None");
+        }
 
         onboarding = GameObject.Find("Canvas").GetComponent<OnboardingBehavior>();
     }
@@ -100,14 +104,15 @@ public class PlayerCollecting : MonoBehaviour
             {
                 nutsInHand -= 1;
                 UpdateNutBoard();
-                Animator birdAnimator = targetSmallBirdCollider.GetComponent<Animator>();
+                Animator birdAnimator = targetSmallBirdCollider.GetComponentInChildren<Animator>();
+                Debug.Log("Eat");
                 birdAnimator.SetTrigger("Eat");
                 //Reset variables
                 //interactionCanvas.enabled = false;
                 //bInFeedRange = false;
                 interactionText.gameObject.SetActive(false);
-                Instantiate(FollowerPrefab, targetSmallBirdCollider.transform.position, Quaternion.identity);
-                Destroy(targetSmallBirdCollider.gameObject);
+                //Instantiate(FollowerPrefab, targetSmallBirdCollider.transform.position, Quaternion.identity);
+                //Destroy(targetSmallBirdCollider.gameObject);
 
                 onboarding.OnFeed();
                 _chicksFed++;
