@@ -32,7 +32,7 @@ Transform:
   m_Children:
   - {fileID: 1198958632626047948}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7733758649797780117
 MonoBehaviour:
@@ -142,6 +142,11 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Untagged
       objectReference: {fileID: 0}
+    - target: {fileID: 6788538757290762327, guid: ad4137f595ec8e2449cacca9df7d3735,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 6690a9b526701eb4b9181ec723e5abc3, type: 2}
     m_RemovedComponents:
     - {fileID: 6788538757290762320, guid: ad4137f595ec8e2449cacca9df7d3735, type: 3}
     m_RemovedGameObjects: []
