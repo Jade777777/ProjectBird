@@ -114,6 +114,7 @@ public class OnboardingBehavior : MonoBehaviour
                 }
                 onboardingPanel.SetActive(false);
                 Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Confined;
                 break;
         }
     } 
