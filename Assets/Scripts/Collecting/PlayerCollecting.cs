@@ -87,8 +87,8 @@ public class PlayerCollecting : MonoBehaviour
                 //interactionCanvas.enabled = false;
                 //bInFeedRange = false;
                 interactionText.gameObject.SetActive(false);
-                //Instantiate(FollowerPrefab, targetSmallBirdCollider.transform.position, Quaternion.identity);
-                //Destroy(targetSmallBirdCollider.gameObject);
+                Instantiate(FollowerPrefab, targetSmallBirdCollider.transform.position, Quaternion.identity);
+                Destroy(targetSmallBirdCollider.gameObject);
 
                 onboarding.OnFeed();
             }

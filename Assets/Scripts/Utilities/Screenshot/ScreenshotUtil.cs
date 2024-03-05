@@ -59,7 +59,7 @@ namespace Utilities.Screenshot
 
         private static Sprite GetSprite(Texture2D texture)
         {
-            return Sprite.Create(texture, new Rect(Vector2.zero, texture.texelSize), Vector2.zero);
+            return Sprite.Create(texture, new Rect(0, 0, 1920, 1080), Vector2.zero);
         }
 
         private void Update()
