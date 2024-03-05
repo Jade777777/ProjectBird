@@ -90,8 +90,15 @@ public class PlayerCollecting : MonoBehaviour
                 //Reset variables
                 targetTreeCollider.enabled = false;
                 interactionText.gameObject.SetActive(false);
-                targetTreeCollider = null;
+                
                 bInNutRange = false;
+
+                //Change the tree color
+                if(targetTreeCollider.gameObject.GetComponent<TreeController>() != null)
+                {
+                    targetTreeCollider.gameObject.GetComponent<TreeController>().changeMaterial();
+                }
+                targetTreeCollider = null;
 
                 onboarding.OnCollection();
                 _nutsCollected++;
@@ -105,14 +112,12 @@ public class PlayerCollecting : MonoBehaviour
                 nutsInHand -= 1;
                 UpdateNutBoard();
                 Animator birdAnimator = targetSmallBirdCollider.GetComponentInChildren<Animator>();
-                Debug.Log("Eat");
+                //Debug.Log("Eat");
                 birdAnimator.SetTrigger("Eat");
-                //Reset variables
-                //interactionCanvas.enabled = false;
-                //bInFeedRange = false;
+
                 interactionText.gameObject.SetActive(false);
-                //Instantiate(FollowerPrefab, targetSmallBirdCollider.transform.position, Quaternion.identity);
-                //Destroy(targetSmallBirdCollider.gameObject);
+                Instantiate(FollowerPrefab, targetSmallBirdCollider.transform.position, Quaternion.identity);
+                Destroy(targetSmallBirdCollider.gameObject);
 
                 onboarding.OnFeed();
                 _chicksFed++;

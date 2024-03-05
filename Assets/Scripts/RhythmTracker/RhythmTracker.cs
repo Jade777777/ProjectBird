@@ -94,7 +94,7 @@ public class RhythmTracker : MonoBehaviour
         
         if (Time.time< lastFlap + cooldown)
         {
-            Debug.Log("Cooldown");
+            //Debug.Log("Cooldown");
             return;
         }
         else
