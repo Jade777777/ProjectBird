@@ -28,7 +28,7 @@ public class PauseScreenBehavior : MonoBehaviour
     private void Update()
     {
         //Pause when Escape key is pressed
-        if (Input.GetKeyDown(KeyCode.Escape) && !onboardingPanel.activeInHierarchy)
+        if (Input.GetKeyDown(KeyCode.Escape) && !onboardingPanel.activeInHierarchy && !screenshotUI.activeInHierarchy)
         {
             PauseGame();
         }
