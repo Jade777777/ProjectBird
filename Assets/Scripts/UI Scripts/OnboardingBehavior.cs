@@ -30,7 +30,7 @@ public class OnboardingBehavior : MonoBehaviour
 
         controls.SetActive(false);
         flightMeter.SetActive(false);
-        
+
         //Set onboarding state to the start and set the text variables
         onboardingState = 1;
         text = onboardingPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
@@ -64,6 +64,7 @@ public class OnboardingBehavior : MonoBehaviour
                 break;
             case 3:
                 player.canMove = true;
+                Time.timeScale = 1.0f;
                 onboardingPanel.SetActive(false);
                 break;
             case 4:
