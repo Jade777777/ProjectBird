@@ -10,7 +10,6 @@ public class OnboardingBehavior : MonoBehaviour
     public GameObject onboardingPanel;
     public GameObject controls;
     public GameObject flightMeter;
-    public GameObject streakMeter;
 
     public List<GameObject> nestColliders;
 
@@ -31,8 +30,7 @@ public class OnboardingBehavior : MonoBehaviour
 
         controls.SetActive(false);
         flightMeter.SetActive(false);
-        streakMeter.SetActive(false);
-
+        
         //Set onboarding state to the start and set the text variables
         onboardingState = 1;
         text = onboardingPanel.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
@@ -101,21 +99,12 @@ public class OnboardingBehavior : MonoBehaviour
                 onboardingPanel.GetComponent<RectTransform>().localPosition = new Vector3(0, 116, 0);
                 text.text = "Up here is your flight meter. Hold spacebar to charge and release when the circle is in the green zone to effectively flap your wings.";
                 flightMeter.SetActive(true);
-                onboardingState++;
-                break;
-            
-            //Show streak meter and onboard the player
-            case 10:
-                onboardingPanel.GetComponent<RectTransform>().localPosition = new Vector3(59, 0, 0);
-                text.text = "This meter represents your Flight Streak, it shows how accurate you are at maintaining the rhythm of flapping your wings. The higher your streak, the faster and higher you'll fly";
-                text.fontSize = 35;
-                streakMeter.SetActive(true);
                 buttonText.text = "Start Game";
                 onboardingState++;
                 break;
 
             //Close the window and unpause the game
-            case 11:
+            case 10:
                 player.canMove = true;
                 player.canFly = true;
                 foreach(GameObject col in nestColliders)
