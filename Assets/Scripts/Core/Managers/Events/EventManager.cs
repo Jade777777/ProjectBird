@@ -13,6 +13,10 @@ namespace Core.Managers.Events
         {
             get { return s_instance ??= new EventManager(); }
         }
+        public static EventManager Activate()
+        {
+            return Instance;
+        }
 
         public delegate void EventDelegate<in T>(T @event) where T : GameEvent;
 

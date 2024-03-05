@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using Core.Managers.Analytics;
+using Core.Managers.Events;
 using UnityEngine;
 using UnityEngine.UI;
 using Utilities.Screenshot;
@@ -19,6 +21,13 @@ public class TitleScreenBehavior : MonoBehaviour
     public GameObject screenshotUI;
 
     bool screenshotsLoaded = false;
+
+    private void Start()
+    {
+        // Activate Event Manager Before Analytics manager.
+        EventManager.Activate();
+        AnalyticsManager.Activate();
+    }
 
     //Transitions to the Game Scene
     public void StartGame()

@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Core.Managers.Events;
 using System.IO;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Core.Managers.Analytics
 {
@@ -19,6 +21,8 @@ namespace Core.Managers.Analytics
         private readonly List<SessionAnalyticsData> _sessionData = new() { new SessionAnalyticsData() };
         private SessionAnalyticsData CurrentData => _sessionData.Last();
 
+        private const string GameSceneName = "TerrainAndBird";
+
         public static AnalyticsManager Activate()
         {
             return Instance;
@@ -27,15 +31,29 @@ namespace Core.Managers.Analytics
         private AnalyticsManager()
         {
             EventManager.AddListener<AnalyticsEvent>(OnAnalyticsEventFired);
-            EventManager.AddListener<StartSessionEvent>(OnSessionStarted);
-            EventManager.AddListener<EndSessionEvent>(OnSessionEnded);
+
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            SceneManager.sceneUnloaded += OnSceneUnloaded;
         }
 
         ~AnalyticsManager()
         {
             EventManager.RemoveListener<AnalyticsEvent>(OnAnalyticsEventFired);
-            EventManager.RemoveListener<StartSessionEvent>(OnSessionStarted);
-            EventManager.RemoveListener<EndSessionEvent>(OnSessionEnded);
+
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            SceneManager.sceneUnloaded -= OnSceneUnloaded;
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode loadMode)
+        {
+            if (scene.name == GameSceneName)
+                OnSessionStarted();
+        }
+
+        private void OnSceneUnloaded(Scene scene)
+        {
+            if (scene.name == GameSceneName)
+                OnSessionEnded();
         }
 
         private void OnAnalyticsEventFired(AnalyticsEvent @event)
@@ -43,19 +61,21 @@ namespace Core.Managers.Analytics
             CurrentData.CapturedEvents.Add(@event);
         }
 
-        private void OnSessionStarted(StartSessionEvent @event)
+        private void OnSessionStarted()
         {
+            new StartSessionEvent().Raise();
             CurrentData.Start();
         }
 
-        private void OnSessionEnded(EndSessionEvent @event)
+        private void OnSessionEnded()
         {
+            new EndSessionEvent().Raise();
             CurrentData.End();
             ExportSessionDataToCSV(CurrentData, $"{Application.persistentDataPath}\\Session_{_sessionData.Count}_AnalyticsData.csv");
             _sessionData.Add(new SessionAnalyticsData());
         }
 
-        public void ExportSessionDataToCSV(SessionAnalyticsData sessionData, string filePath)
+        private static void ExportSessionDataToCSV(SessionAnalyticsData sessionData, string filePath)
         {
             try
             {
@@ -65,6 +85,10 @@ namespace Core.Managers.Analytics
                 // Write start and end date time. 
                 writer.WriteLine($"StartDateTime,{sessionData.StartDateTime}");
                 writer.WriteLine($"EndDateTime,{sessionData.EndDateTime}\n");
+                writer.WriteLine($"Total Session Time,{sessionData.TotalTimePlayed}");
+                var gameTimeAfterChicksFed = sessionData.GetGameTimeAfterChicksFed();
+                var str = gameTimeAfterChicksFed == TimeSpan.Zero ? "-" : gameTimeAfterChicksFed.ToString();
+                writer.WriteLine($"Game Time After Chicks Fed,{str}");
                 writer.WriteLine("Captured Events");
                 writer.WriteLine("Name, Parameter, Value");
 
