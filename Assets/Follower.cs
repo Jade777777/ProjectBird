@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Follower : MonoBehaviour
@@ -25,7 +26,10 @@ public class Follower : MonoBehaviour
         hasBeenFed = true;
     }
 
-
+    private void OnDisable()
+    {
+        FollowerList.Remove(this);
+    }
     Vector3 currentVelocity;
     // Update is called once per frame
     void Update()
