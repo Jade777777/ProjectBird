@@ -27,7 +27,8 @@ public class PlayerCollecting : MonoBehaviour
     bool bInFeedRange = false;
 
     CapsuleCollider targetTreeCollider;
-    CapsuleCollider targetSmallBirdCollider;
+    //CapsuleCollider targetSmallBirdCollider;
+    GameObject nest;
 
     //The nuts the player has
     int nutsInHand = 0;
@@ -45,6 +46,7 @@ public class PlayerCollecting : MonoBehaviour
         nut1 = GameObject.Find("Nut1");
         nut2 = GameObject.Find("Nut2");
         nut3 = GameObject.Find("Nut3");
+        nest = GameObject.Find("Nest");
         UpdateNutBoard();
 
         //Hide the instruction for interaction
@@ -111,13 +113,15 @@ public class PlayerCollecting : MonoBehaviour
             {
                 nutsInHand -= 1;
                 UpdateNutBoard();
-                Animator birdAnimator = targetSmallBirdCollider.GetComponentInChildren<Animator>();
+                Animator birdAnimator = nest.GetComponent<Nest>().chickList[0].GetComponentInChildren<Animator>();
                 //Debug.Log("Eat");
                 birdAnimator.SetTrigger("Eat");
 
                 interactionText.gameObject.SetActive(false);
-                Instantiate(FollowerPrefab, targetSmallBirdCollider.transform.position, Quaternion.identity);
-                Destroy(targetSmallBirdCollider.gameObject);
+                Instantiate(FollowerPrefab, nest.transform.position, Quaternion.identity);
+
+                nest.GetComponent<Nest>().RemoveBird();
+                //Destroy(targetSmallBirdCollider.gameObject);
 
                 onboarding.OnFeed();
                 _chicksFed++;
@@ -138,14 +142,21 @@ public class PlayerCollecting : MonoBehaviour
 
             targetTreeCollider = other.GetComponent<CapsuleCollider>();
         }
-        //
-        else if(other.tag == "SmallBird" && nutsInHand != 0)
+        //If small birds (abandoned)
+/*        else if(other.tag == "SmallBird" && nutsInHand != 0)
         {
             bInFeedRange = true;
             interactionText.gameObject.SetActive(true);
             interactionText.text = "Press E to feed";
 
             targetSmallBirdCollider = other.GetComponent<CapsuleCollider>();
+        }*/
+
+        else if (other.tag == "Nest" && nutsInHand != 0)
+        {
+            bInFeedRange = true;
+            interactionText.gameObject.SetActive(true);
+            interactionText.text = "Press E to feed";
         }
 
     }
@@ -166,7 +177,7 @@ public class PlayerCollecting : MonoBehaviour
             interactionText.gameObject.SetActive(false);
 
 
-            targetSmallBirdCollider = null;
+            //targetSmallBirdCollider = null;
         }
     }
 
