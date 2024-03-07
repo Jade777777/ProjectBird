@@ -309,13 +309,40 @@ public class PlayerMovement : MonoBehaviour
     // Camera revolves with mouse move if LMB is held down
     private void HandleCamera()
     {
-
         curMousePos = Mouse.current.position.ReadValue();
+        Debug.Log(curMousePos);
         Vector2 mouseDelta = curMousePos - prevMousePos;
-        prevMousePos = curMousePos;
 
+        prevMousePos = curMousePos;
+        
         if (!Mouse.current.leftButton.isPressed) return;
 
+        if (curMousePos.x <= 0)
+        {
+            Mouse.current.WarpCursorPosition(new Vector2(Screen.width - 5, curMousePos.y));
+            curMousePos = new Vector2(Screen.width - 5, curMousePos.y);
+        }
+
+        if (curMousePos.x >= Screen.width)
+        {
+            Mouse.current.WarpCursorPosition(new Vector2(5, curMousePos.y));
+            curMousePos = new Vector2(5, curMousePos.y);
+        }
+
+        if (curMousePos.y <= 0)
+        {
+            Mouse.current.WarpCursorPosition(new Vector2(curMousePos.x, Screen.height - 5));
+            curMousePos = new Vector2(curMousePos.x, Screen.height - 5);
+        }
+
+        if (curMousePos.y >= Screen.height)
+        {
+            Mouse.current.WarpCursorPosition(new Vector2(curMousePos.x, 5));
+            curMousePos = new Vector2(curMousePos.x, 5);
+        }
+
+        prevMousePos = curMousePos;
+        
         // Zeroing out if in dead zone
         if (Mathf.Abs(mouseDelta.x) <= mouseDeltaDeadZone) mouseDelta.x = 0;
         if (Mathf.Abs(mouseDelta.y) <= mouseDeltaDeadZone) mouseDelta.y = 0;
