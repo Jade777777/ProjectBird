@@ -24,7 +24,7 @@ public class PauseScreenBehavior : MonoBehaviour
     public GameObject screenshotUI;
 
     bool screenshotsLoaded = false;
-
+    
     private void Update()
     {
         //Pause when Escape key is pressed
@@ -60,8 +60,7 @@ public class PauseScreenBehavior : MonoBehaviour
             pauseScreen.gameObject.SetActive(false);
             gameUI.gameObject.SetActive(true);
             Time.timeScale = 1.0f;
-
-            Cursor.lockState = CursorLockMode.Confined;
+            //Cursor.lockState = CursorLockMode.Confined;
         }
     }
 
