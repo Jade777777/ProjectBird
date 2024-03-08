@@ -52,7 +52,7 @@ public class OnboardingBehavior : MonoBehaviour
                 onboardingPanel.GetComponent<RectTransform>().localPosition = new Vector3(-24, -341, 0);
                 text.text = "The controls for the game are listed here in the bottom left. \n<--";
                 controls.SetActive(true);
-                controlsText.text = "Use WASD to move around on the ground.\n\nPress E to interact.\n\nLeftClick + move your mouse to control the camera. ";
+                controlsText.text = "Use WASD to move around on the ground.\nPress E to interact.\nLeftClick + move your mouse to control the camera. ";
                 onboardingState++;
                 break;
 
