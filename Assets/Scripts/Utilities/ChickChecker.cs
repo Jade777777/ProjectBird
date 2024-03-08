@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using Core.Managers;
 using Core.Managers.Analytics;
 using UnityEngine;
 
