@@ -10,6 +10,7 @@ public class OnboardingBehavior : MonoBehaviour
     public GameObject onboardingPanel;
     public GameObject controls;
     public GameObject flightMeter;
+    public GameObject treePic;
 
     public List<GameObject> nestColliders;
 
@@ -60,9 +61,11 @@ public class OnboardingBehavior : MonoBehaviour
                 onboardingPanel.GetComponent<RectTransform>().localPosition = startingPos;
                 text.fontSize = 38;
                 text.text = "Your chicks are getting hungry! Luckily there is an almond tree right next to the nest.\n Walk over to it and try to pick it.";
+                treePic.SetActive(true);
                 onboardingState++;
                 break;
             case 3:
+                treePic.SetActive(false);
                 player.canMove = true;
                 Time.timeScale = 1.0f;
                 onboardingPanel.SetActive(false);
