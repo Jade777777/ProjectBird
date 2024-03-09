@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 9a7953265ce3f4941b0ca9d10b57f651
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Boohong
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 5308a66aaddc0b142880cd86607b2c21, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

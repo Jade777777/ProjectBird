@@ -10,6 +10,7 @@ public class OnboardingBehavior : MonoBehaviour
     public GameObject onboardingPanel;
     public GameObject controls;
     public GameObject flightMeter;
+    public GameObject treePic;
 
     public List<GameObject> nestColliders;
 
@@ -52,7 +53,7 @@ public class OnboardingBehavior : MonoBehaviour
                 onboardingPanel.GetComponent<RectTransform>().localPosition = new Vector3(-24, -341, 0);
                 text.text = "The controls for the game are listed here in the bottom left. \n<--";
                 controls.SetActive(true);
-                controlsText.text = "Use WASD to move around on the ground.\n\nPress E to interact.\n\nLeftClick + move your mouse to control the camera. ";
+                controlsText.text = "Use WASD to move around on the ground.\nPress E to interact.\nLeftClick + move your mouse to control the camera. ";
                 onboardingState++;
                 break;
 
@@ -60,9 +61,11 @@ public class OnboardingBehavior : MonoBehaviour
                 onboardingPanel.GetComponent<RectTransform>().localPosition = startingPos;
                 text.fontSize = 38;
                 text.text = "Your chicks are getting hungry! Luckily there is an almond tree right next to the nest.\n Walk over to it and try to pick it.";
+                treePic.SetActive(true);
                 onboardingState++;
                 break;
             case 3:
+                treePic.SetActive(false);
                 player.canMove = true;
                 Time.timeScale = 1.0f;
                 onboardingPanel.SetActive(false);
